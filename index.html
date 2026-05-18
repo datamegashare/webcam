@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WebCam DMS</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#7C3AED" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="WebCam DMS" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+<!-- Syne: geométrica, técnica, memorable -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --violet-50:  #f5f3ff;
+  --violet-100: #ede9fe;
+  --violet-200: #ddd6fe;
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+  --violet-900: #2e1065;
+
+  --ink:        #1a1023;
+  --ink-soft:   #4b3f6b;
+  --ink-muted:  #8b7faa;
+  --surface:    #ffffff;
+  --surface-2:  #f8f7ff;
+  --border:     #e8e4f5;
+
+  --green:      #10b981;
+  --red:        #ef4444;
+  --amber:      #f59e0b;
+
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --radius-sm:  8px;
+  --radius-md:  14px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+
+  --shadow-sm:  0 1px 4px rgba(124,58,237,.08);
+  --shadow-md:  0 4px 20px rgba(124,58,237,.12);
+  --shadow-lg:  0 12px 40px rgba(124,58,237,.18);
+}
+
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-display);
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px 32px;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.header {
+  padding: 24px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--violet-600);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-icon svg { width: 20px; height: 20px; fill: white; }
+
+.logo-text {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  color: var(--ink);
+}
+
+.logo-version {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-top: 1px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, background .2s;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+.btn-icon:hover { border-color: var(--violet-400); background: var(--violet-50); }
+
+/* ── SCREEN SYSTEM ───────────────────────────────────────── */
+.screen { display: none; flex-direction: column; flex: 1; }
+.screen.active { display: flex; }
+
+/* ── SCREEN: HOME ────────────────────────────────────────── */
+.home-hero {
+  margin-top: 36px;
+  margin-bottom: 32px;
+}
+
+.home-tagline {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--violet-500);
+  margin-bottom: 10px;
+}
+
+.home-title {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.5px;
+  color: var(--ink);
+}
+
+.home-title span {
+  background: linear-gradient(135deg, var(--violet-600), var(--violet-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-sub {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.mode-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mode-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--violet-50) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.mode-card:hover { border-color: var(--violet-400); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.mode-card:hover::before { opacity: 1; }
+.mode-card:active { transform: scale(.98); }
+
+.mode-card-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+  display: block;
+  position: relative;
+}
+
+.mode-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.mode-card-desc {
+  font-size: 13px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  font-weight: 400;
+  position: relative;
+}
+
+.mode-card-arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--violet-400);
+  font-size: 20px;
+  transition: transform .2s;
+}
+.mode-card:hover .mode-card-arrow { transform: translateY(-50%) translateX(3px); }
+
+/* ── SCREEN: TRANSMIT ────────────────────────────────────── */
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0 24px;
+}
+
+.btn-back {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: var(--ink-soft);
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.btn-back:hover { border-color: var(--violet-400); background: var(--violet-50); }
+
+.screen-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+}
+
+/* Video preview */
+.video-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--ink);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.video-container video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: white;
+}
+
+.video-overlay .ov-icon { font-size: 36px; opacity: .5; }
+.video-overlay .ov-text { font-size: 13px; opacity: .5; font-weight: 500; }
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  margin-bottom: 16px;
+}
+
+.status-badge .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+.status-idle    { background: var(--surface-2); color: var(--ink-muted); }
+.status-idle .dot { background: var(--ink-muted); }
+.status-waiting { background: #fff7ed; color: #92400e; }
+.status-waiting .dot { background: var(--amber); animation: pulse-dot 1.2s ease infinite; }
+.status-connected { background: #ecfdf5; color: #065f46; }
+.status-connected .dot { background: var(--green); }
+.status-error   { background: #fef2f2; color: #991b1b; }
+.status-error .dot { background: var(--red); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .5; transform: scale(.7); }
+}
+
+/* Sala code */
+.sala-display {
+  background: var(--surface-2);
+  border: 2px dashed var(--violet-200);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sala-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+
+.sala-code {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  color: var(--violet-700);
+}
+
+.sala-hint {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+
+/* ── SCREEN: VIEW ────────────────────────────────────────── */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.input-field {
+  width: 100%;
+  height: 52px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-align: center;
+  color: var(--violet-700);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  text-transform: uppercase;
+}
+
+.input-field::placeholder {
+  color: var(--violet-200);
+  letter-spacing: .1em;
+}
+
+.input-field:focus {
+  border-color: var(--violet-500);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.12);
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -.1px;
+}
+
+.btn-primary {
+  background: var(--violet-600);
+  color: white;
+  box-shadow: 0 2px 12px rgba(124,58,237,.3);
+}
+.btn-primary:hover { background: var(--violet-700); box-shadow: 0 4px 20px rgba(124,58,237,.4); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { background: var(--violet-200); box-shadow: none; cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--violet-700);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--violet-400); background: var(--violet-50); }
+.btn-secondary:active { transform: scale(.98); }
+
+.btn-danger {
+  background: #fef2f2;
+  color: var(--red);
+  border: 1.5px solid #fecaca;
+}
+.btn-danger:hover { background: #fee2e2; }
+
+.btn + .btn { margin-top: 10px; }
+
+/* spinner inside btn */
+.btn-spinner {
+  width: 18px; height: 18px;
+  border: 2.5px solid rgba(255,255,255,.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── INSTALL BANNER ──────────────────────────────────────── */
+.install-banner {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: var(--violet-50);
+  border: 1.5px solid var(--violet-200);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 20px;
+}
+
+.install-banner.show { display: flex; }
+
+.install-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.install-text strong { color: var(--violet-700); }
+
+.btn-install {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 14px;
+  background: var(--violet-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-install:hover { background: var(--violet-700); }
+
+/* ── DIVIDER ─────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ── SPACER ──────────────────────────────────────────────── */
+.spacer { flex: 1; }
+
+/* ── TOAST ───────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 440px;
+}
+
+.toast {
+  background: var(--ink);
+  color: white;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  animation: toast-in .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: all;
+}
+
+.toast.success { background: #065f46; }
+.toast.error   { background: #991b1b; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">WebCam DMS</div>
+        <div class="logo-version" id="versionDisplay">v1.0</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnUpdate" title="Actualizar app" onclick="updateApp()">↻</button>
+    </div>
+  </header>
+
+  <!-- ── SCREEN: HOME ───────────────────────────────────── -->
+  <div class="screen active" id="screenHome">
+
+    <div class="home-hero">
+      <div class="home-tagline">Red local · WebRTC</div>
+      <h1 class="home-title">Cámara en<br/><span>tiempo real</span></h1>
+      <p class="home-sub">Transmití desde un celular, mirá desde otro. Sin servidores externos.</p>
+    </div>
+
+    <div class="mode-cards">
+      <button class="mode-card" onclick="goTransmit()">
+        <span class="mode-card-icon">📷</span>
+        <div class="mode-card-title">Transmitir</div>
+        <div class="mode-card-desc">Usá la cámara de este dispositivo como fuente de video.</div>
+        <span class="mode-card-arrow">›</span>
+      </button>
+
+      <button class="mode-card" onclick="goView()">
+        <span class="mode-card-icon">👁️</span>
+        <div class="mode-card-title">Ver</div>
+        <div class="mode-card-desc">Conectate a una transmisión activa usando el código de sala.</div>
+        <span class="mode-card-arrow">›</span>
+      </button>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="install-banner" id="installBanner">
+      <div class="install-text"><strong>Instalá la app</strong><br/>Acceso rápido desde la pantalla de inicio.</div>
+      <button class="btn-install" onclick="installPWA()">Instalar</button>
+    </div>
+
+  </div>
+
+  <!-- ── SCREEN: TRANSMIT ───────────────────────────────── -->
+  <div class="screen" id="screenTransmit">
+
+    <div class="screen-header">
+      <button class="btn-back" onclick="goHome()">‹</button>
+      <div class="screen-title">Transmitir</div>
+    </div>
+
+    <div class="video-container">
+      <video id="localVideo" autoplay muted playsinline></video>
+      <div class="video-overlay" id="localOverlay">
+        <span class="ov-icon">📷</span>
+        <span class="ov-text">Sin cámara activa</span>
+      </div>
+    </div>
+
+    <div id="txStatus" class="status-badge status-idle">
+      <div class="dot"></div>
+      <span id="txStatusText">Inactivo</span>
+    </div>
+
+    <div class="sala-display" id="salaDisplay" style="display:none">
+      <div class="sala-label">Código de sala</div>
+      <div class="sala-code" id="salaCode">—</div>
+      <div class="sala-hint">Compartí este código con el otro dispositivo</div>
+    </div>
+
+    <button class="btn btn-primary" id="btnStartTx" onclick="startTransmit()">
+      <span>📷</span> Iniciar transmisión
+    </button>
+    <button class="btn btn-danger" id="btnStopTx" onclick="stopTransmit()" style="display:none">
+      Detener
+    </button>
+
+  </div>
+
+  <!-- ── SCREEN: VIEW ───────────────────────────────────── -->
+  <div class="screen" id="screenView">
+
+    <div class="screen-header">
+      <button class="btn-back" onclick="goHome()">‹</button>
+      <div class="screen-title">Ver transmisión</div>
+    </div>
+
+    <div class="video-container">
+      <video id="remoteVideo" autoplay playsinline></video>
+      <div class="video-overlay" id="remoteOverlay">
+        <span class="ov-icon">👁️</span>
+        <span class="ov-text">Sin video</span>
+      </div>
+    </div>
+
+    <div id="rxStatus" class="status-badge status-idle">
+      <div class="dot"></div>
+      <span id="rxStatusText">Inactivo</span>
+    </div>
+
+    <div class="input-group" id="salaInputGroup">
+      <label class="input-label" for="salaInput">Código de sala</label>
+      <input class="input-field" id="salaInput" type="text" maxlength="4"
+             placeholder="0000" oninput="this.value=this.value.toUpperCase()" />
+    </div>
+
+    <button class="btn btn-primary" id="btnConnect" onclick="startView()">
+      <span>🔗</span> Conectar
+    </button>
+    <button class="btn btn-danger" id="btnDisconnect" onclick="stopView()" style="display:none">
+      Desconectar
+    </button>
+
+  </div>
+
+</div><!-- /app -->
+
+<!-- ── TOASTS ──────────────────────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────── -->
+<script>
+// ============================================================
+//  CONFIG — editá GAS_URL después de desplegar el script
+// ============================================================
+const CONFIG = {
+  VERSION_UI: 'v1.0',
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',   // ← reemplazar tras deploy
+  POLL_INTERVAL_MS: 1500,         // cada cuánto polls en ms
+  ICE_SERVERS: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' }
+  ]
+};
+
+// ============================================================
+//  ESTADO GLOBAL
+// ============================================================
+let pc            = null;   // RTCPeerConnection
+let localStream   = null;
+let sala          = null;
+let pollTimer     = null;
+let candidateBuffer = [];   // ICE candidates locales pendientes de enviar
+let deferInstall  = null;
+
+// ============================================================
+//  PWA — Install
+// ============================================================
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferInstall = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+function installPWA() {
+  if (!deferInstall) return;
+  deferInstall.prompt();
+  deferInstall.userChoice.then(() => {
+    document.getElementById('installBanner').classList.remove('show');
+    deferInstall = null;
+  });
+}
+
+function updateApp() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) reg.update().then(() => location.reload());
+      else location.reload();
+    });
+  } else {
+    location.reload();
+  }
+  toast('Actualizando…');
+}
+
+// ============================================================
+//  SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw_v1.js').catch(err =>
+    console.warn('SW no registrado:', err)
+  );
+}
+
+// ============================================================
+//  NAVEGACIÓN
+// ============================================================
+function goHome() {
+  stopTransmit();
+  stopView();
+  showScreen('screenHome');
+}
+function goTransmit() { showScreen('screenTransmit'); }
+function goView()     { showScreen('screenView'); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+function toast(msg, type = '') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+// ============================================================
+//  GAS helper
+// ============================================================
+async function gas(params) {
+  const url = CONFIG.GAS_URL + '?' + new URLSearchParams(params).toString();
+  const r   = await fetch(url);
+  return r.json();
+}
+
+// ============================================================
+//  SALA code generator
+// ============================================================
+function genSala() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+
+// ============================================================
+//  STATUS helpers
+// ============================================================
+function setTxStatus(state, label) {
+  const el = document.getElementById('txStatus');
+  el.className = 'status-badge status-' + state;
+  document.getElementById('txStatusText').textContent = label;
+}
+
+function setRxStatus(state, label) {
+  const el = document.getElementById('rxStatus');
+  el.className = 'status-badge status-' + state;
+  document.getElementById('rxStatusText').textContent = label;
+}
+
+// ============================================================
+//  TRANSMIT MODE
+// ============================================================
+async function startTransmit() {
+  const btn = document.getElementById('btnStartTx');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="btn-spinner"></div>';
+
+  try {
+    // 1. Obtener stream de cámara
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'environment' },
+      audio: false
+    });
+
+    const vid = document.getElementById('localVideo');
+    vid.srcObject = localStream;
+    document.getElementById('localOverlay').style.display = 'none';
+
+    // 2. Generar sala
+    sala = genSala();
+    document.getElementById('salaCode').textContent = sala;
+    document.getElementById('salaDisplay').style.display = 'block';
+
+    // 3. Limpiar sala previa en GAS
+    await gas({ action: 'clearSession', sala });
+
+    // 4. Crear PeerConnection
+    pc = new RTCPeerConnection({ iceServers: CONFIG.ICE_SERVERS });
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+    // Enviar ICE candidates al recopilarlos
+    pc.onicecandidate = async e => {
+      if (e.candidate) {
+        await gas({
+          action: 'addCandidate',
+          sala,
+          datos: JSON.stringify(e.candidate.toJSON()),
+          rol: 'caller'
+        });
+      }
+    };
+
+    pc.onconnectionstatechange = () => {
+      const s = pc.connectionState;
+      if (s === 'connected') {
+        setTxStatus('connected', 'Conectado');
+        toast('¡Conexión establecida!', 'success');
+        stopPolling();
+      } else if (s === 'disconnected' || s === 'failed') {
+        setTxStatus('error', 'Desconectado');
+        toast('Se perdió la conexión.', 'error');
+      }
+    };
+
+    // 5. Crear offer
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await gas({ action: 'setOffer', sala, datos: JSON.stringify(offer) });
+
+    setTxStatus('waiting', 'Esperando visor…');
+    btn.style.display   = 'none';
+    document.getElementById('btnStopTx').style.display = 'flex';
+
+    toast('Sala ' + sala + ' activa. Compartí el código.');
+
+    // 6. Pollear answer
+    startPolling(async () => {
+      const res = await gas({ action: 'getAnswer', sala });
+      if (!res.ok) return;
+      if (pc.signalingState === 'have-local-offer') {
+        await pc.setRemoteDescription(JSON.parse(res.datos));
+        setTxStatus('waiting', 'Negociando ICE…');
+        // Traer candidates del callee
+        fetchRemoteCandidates('callee');
+      }
+    });
+
+  } catch (err) {
+    toast('Error: ' + err.message, 'error');
+    setTxStatus('error', 'Error');
+    btn.disabled = false;
+    btn.innerHTML = '<span>📷</span> Iniciar transmisión';
+  }
+}
+
+async function fetchRemoteCandidates(rol) {
+  const res = await gas({ action: 'getCandidates', sala, rol });
+  if (res.ok && res.candidates) {
+    for (const c of res.candidates) {
+      try { await pc.addIceCandidate(new RTCIceCandidate(JSON.parse(c))); } catch {}
+    }
+  }
+  // Seguir intentando en el poll
+}
+
+function stopTransmit() {
+  stopPolling();
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  if (pc) { pc.close(); pc = null; }
+  if (sala) { gas({ action: 'clearSession', sala }).catch(() => {}); sala = null; }
+
+  const vid = document.getElementById('localVideo');
+  vid.srcObject = null;
+  document.getElementById('localOverlay').style.display = 'flex';
+  document.getElementById('salaDisplay').style.display  = 'none';
+
+  const btnStart = document.getElementById('btnStartTx');
+  btnStart.style.display   = 'flex';
+  btnStart.disabled        = false;
+  btnStart.innerHTML       = '<span>📷</span> Iniciar transmisión';
+  document.getElementById('btnStopTx').style.display = 'none';
+
+  setTxStatus('idle', 'Inactivo');
+}
+
+// ============================================================
+//  VIEW MODE
+// ============================================================
+async function startView() {
+  const input = document.getElementById('salaInput').value.trim().toUpperCase();
+  if (input.length < 4) { toast('Ingresá el código de sala (4 caracteres)', 'error'); return; }
+
+  sala = input;
+  const btn = document.getElementById('btnConnect');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="btn-spinner"></div>';
+  document.getElementById('salaInputGroup').style.display = 'none';
+  setRxStatus('waiting', 'Buscando sala…');
+
+  // 1. Obtener offer
+  let offerRes;
+  try {
+    offerRes = await gas({ action: 'getOffer', sala });
+    if (!offerRes.ok) throw new Error('Sala no encontrada');
+  } catch (err) {
+    toast('No se encontró la sala. ¿Está activa?', 'error');
+    setRxStatus('error', 'Sala no encontrada');
+    resetViewUI();
+    return;
+  }
+
+  // 2. Crear PeerConnection
+  pc = new RTCPeerConnection({ iceServers: CONFIG.ICE_SERVERS });
+
+  pc.ontrack = e => {
+    const vid = document.getElementById('remoteVideo');
+    if (!vid.srcObject) {
+      vid.srcObject = e.streams[0];
+      document.getElementById('remoteOverlay').style.display = 'none';
+    }
+  };
+
+  pc.onicecandidate = async e => {
+    if (e.candidate) {
+      await gas({
+        action: 'addCandidate',
+        sala,
+        datos: JSON.stringify(e.candidate.toJSON()),
+        rol: 'callee'
+      });
+    }
+  };
+
+  pc.onconnectionstatechange = () => {
+    const s = pc.connectionState;
+    if (s === 'connected') {
+      setRxStatus('connected', 'Conectado');
+      toast('¡Video en vivo!', 'success');
+      stopPolling();
+    } else if (s === 'disconnected' || s === 'failed') {
+      setRxStatus('error', 'Desconectado');
+      toast('Se perdió la conexión.', 'error');
+    }
+  };
+
+  // 3. Set remote offer, create answer
+  await pc.setRemoteDescription(JSON.parse(offerRes.datos));
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  await gas({ action: 'setAnswer', sala, datos: JSON.stringify(answer) });
+
+  setRxStatus('waiting', 'Negociando ICE…');
+  btn.style.display    = 'none';
+  document.getElementById('btnDisconnect').style.display = 'flex';
+
+  // 4. Pollear candidates del caller
+  startPolling(async () => {
+    const res = await gas({ action: 'getCandidates', sala, rol: 'caller' });
+    if (res.ok && res.candidates) {
+      for (const c of res.candidates) {
+        try { await pc.addIceCandidate(new RTCIceCandidate(JSON.parse(c))); } catch {}
+      }
+    }
+  });
+}
+
+function stopView() {
+  stopPolling();
+  if (pc) { pc.close(); pc = null; }
+  sala = null;
+
+  const vid = document.getElementById('remoteVideo');
+  vid.srcObject = null;
+  document.getElementById('remoteOverlay').style.display = 'flex';
+
+  resetViewUI();
+  setRxStatus('idle', 'Inactivo');
+}
+
+function resetViewUI() {
+  const btn = document.getElementById('btnConnect');
+  btn.style.display   = 'flex';
+  btn.disabled        = false;
+  btn.innerHTML       = '<span>🔗</span> Conectar';
+  document.getElementById('btnDisconnect').style.display  = 'none';
+  document.getElementById('salaInputGroup').style.display = 'block';
+}
+
+// ============================================================
+//  POLLING
+// ============================================================
+function startPolling(fn) {
+  stopPolling();
+  pollTimer = setInterval(fn, CONFIG.POLL_INTERVAL_MS);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+document.getElementById('versionDisplay').textContent = CONFIG.VERSION_UI;
+</script>
+
+</body>
+</html>
