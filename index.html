@@ -221,28 +221,6 @@ body {
 .mode-card-desc  { font-size: 12px; color: var(--text2); line-height: 1.45; font-weight: 400; }
 .mode-card-arrow { color: var(--v300); flex-shrink: 0; }
 
-/* ── INSTALL BANNER ──────────────────────────────────────── */
-.install-banner { display: none; align-items: center; gap: 12px; background: var(--v50); border: 1px solid var(--v200); border-radius: var(--r-md); padding: 12px 14px; margin-top: 18px; }
-.install-banner.show { display: flex; }
-.install-text { flex: 1; font-size: 12px; color: var(--text2); line-height: 1.5; }
-.install-text strong { color: var(--v800); font-weight: 600; }
-.btn-install-sm { flex-shrink: 0; height: 32px; padding: 0 12px; background: var(--v800); color: white; border: none; border-radius: var(--r-sm); font-family: var(--font-body); font-size: 12px; font-weight: 600; cursor: pointer; }
-
-/* Instrucciones manuales de instalación */
-.install-manual {
-  margin-top: 14px;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-md);
-  padding: 14px 16px;
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.7;
-}
-.install-manual strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 4px; }
-.install-manual .install-step { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
-.install-step-num { flex-shrink: 0; width: 18px; height: 18px; background: var(--v800); color: white; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-
 /* ── SCREEN INNER HEADER ─────────────────────────────────── */
 .screen-header {
   display: flex; align-items: center; gap: 12px;
@@ -521,6 +499,14 @@ body {
       </div>
     </div>
     <div class="topbar-actions">
+      <!-- Instalar PWA — visible solo con beforeinstallprompt -->
+      <button class="topbar-btn topbar-btn-install" id="btnInstall" title="Instalar app" style="display:none" onclick="installPWA()">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
       <!-- Modo oscuro -->
       <button class="topbar-btn" id="btnDarkMode" title="Modo oscuro" onclick="toggleDark()">
         <svg class="icon icon-sm" id="iconDark" viewBox="0 0 24 24">
@@ -590,32 +576,6 @@ body {
 
       <div class="spacer"></div>
 
-      <!-- Banner automático (beforeinstallprompt) -->
-      <div class="install-banner" id="installBanner">
-        <svg class="icon" viewBox="0 0 24 24" style="color:var(--v600);flex-shrink:0">
-          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
-          <path d="M12 8v8M8 12l4 4 4-4"/>
-        </svg>
-        <div class="install-text"><strong>Instalá la app</strong><br/>Acceso rápido desde la pantalla de inicio.</div>
-        <button class="btn-install-sm" onclick="installPWA()">Instalar</button>
-      </div>
-
-      <!-- Instrucciones manuales si el banner no aparece -->
-      <div class="install-manual" id="installManual" style="display:none">
-        <strong>📲 Instalar como app</strong>
-        <div class="install-step">
-          <div class="install-step-num">1</div>
-          <span>En Chrome: tocá el menú <b>⋮</b> (tres puntos)</span>
-        </div>
-        <div class="install-step">
-          <div class="install-step-num">2</div>
-          <span>Seleccioná <b>"Agregar a pantalla de inicio"</b></span>
-        </div>
-        <div class="install-step">
-          <div class="install-step-num">3</div>
-          <span>Confirmá tocando <b>"Agregar"</b></span>
-        </div>
-      </div>
     </div>
 
     <!-- ── SCREEN: TRANSMIT ──────────────────────── -->
@@ -839,7 +799,7 @@ body {
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:       'v4.6',
+  VERSION_UI:       'v4.7',
   GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
@@ -1292,47 +1252,34 @@ function checkAutoConnect() {
 }
 
 // ============================================================
-//  PWA
+//  PWA — patrón estándar
 // ============================================================
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferInstall = e;
-  document.getElementById('installBanner').classList.add('show');
-  document.getElementById('installManual').style.display = 'none';
+  document.getElementById('btnInstall').style.display = 'flex';
 });
 
-// Si después de 4 segundos no hubo beforeinstallprompt → mostrar instrucciones manuales
-// (puede estar ya instalada, o el browser no lo soporta — no mostramos en ese caso)
-setTimeout(() => {
-  if (!deferInstall) {
-    // Solo mostrar si no está en standalone (no instalada como PWA)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                      || window.navigator.standalone;
-    if (!isStandalone) {
-      document.getElementById('installManual').style.display = 'block';
-    }
-  }
-}, 4000);
+window.addEventListener('appinstalled', () => {
+  deferInstall = null;
+  document.getElementById('btnInstall').style.display = 'none';
+  toast('✅ App instalada');
+});
+
 function installPWA() {
-  if (!deferInstall) return;
+  if (!deferInstall) {
+    toast('En iOS: compartir → "Agregar a pantalla de inicio"');
+    return;
+  }
   deferInstall.prompt();
   deferInstall.userChoice.then(() => {
-    document.getElementById('installBanner').classList.remove('show');
     deferInstall = null;
+    document.getElementById('btnInstall').style.display = 'none';
   });
 }
-function updateApp() {
-  toast('Actualizando…');
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then(reg => {
-      if (reg) reg.update().then(() => location.reload());
-      else location.reload();
-    });
-  } else location.reload();
-}
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw_v2.js').catch(err => console.warn('SW no registrado:', err));
-}
+  navigator.serviceWorker.register('./sw_v1.js').catch(err => console.warn('SW no registrado:', err));
+}}
 
 // ============================================================
 //  NAVEGACIÓN
@@ -1769,4 +1716,7 @@ initAuth().then(() => {
 </script>
 
 </body>
-</html>
+</html>.topbar-btn-install { border-color: rgba(251,191,36,.50); color: #fbbf24; }
+.topbar-btn-install:hover { background: rgba(251,191,36,.15); }
+
+
