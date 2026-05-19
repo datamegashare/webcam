@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>WebCam DMS</title>
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#5B21B6" />
@@ -10,12 +10,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="WebCam DMS" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
-
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-<!-- QR Generator -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -33,43 +30,48 @@
   --v900:  #4c1d95;
   --v950:  #2e1065;
 
-  --ink:        #1a1023;
-  --ink-soft:   #4b3f6b;
-  --ink-muted:  #8b7faa;
-  --surface:    #ffffff;
-  --surface-2:  #f8f7ff;
-  --border:     #e8e4f5;
+  --bg:       #F5F4F0;
+  --card:     #FFFFFF;
+  --text:     #1A1A1A;
+  --text2:    #5c5470;
+  --text3:    #9d94b5;
+  --border:   rgba(91,33,182,0.10);
+  --border2:  rgba(91,33,182,0.18);
 
   --green:   #10b981;
   --red:     #ef4444;
   --amber:   #f59e0b;
 
-  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
   --font-mono:    'DM Mono', monospace;
 
   --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
 
-  --sh-sm: 0 1px 4px rgba(91,33,182,.08);
-  --sh-md: 0 4px 20px rgba(91,33,182,.14);
-  --sh-lg: 0 12px 40px rgba(91,33,182,.22);
+  --sh-sm: 0 1px 4px rgba(91,33,182,.07);
+  --sh-md: 0 4px 20px rgba(91,33,182,.12);
+  --sh-lg: 0 12px 40px rgba(91,33,182,.20);
 }
 
 /* ── RESET ───────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
-
 body {
-  font-family: var(--font-display);
-  background: var(--surface);
-  color: var(--ink);
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── SVG ICON HELPER ─────────────────────────────────────── */
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; flex-shrink: 0; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-lg { width: 24px; height: 24px; }
 
 /* ── LOCK SCREEN ─────────────────────────────────────────── */
 #lockScreen {
@@ -85,46 +87,32 @@ body {
 }
 #lockScreen.visible { display: flex; }
 
-.lock-icon {
+.lock-icon-wrap {
   width: 72px; height: 72px;
-  background: rgba(255,255,255,.08);
-  border: 2px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.15);
   border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 32px;
   margin-bottom: 24px;
-  animation: lock-pulse 2s ease infinite;
+  animation: lock-pulse 2.4s ease infinite;
+  color: rgba(255,255,255,.6);
 }
 @keyframes lock-pulse {
   0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,0); }
-  50%      { box-shadow: 0 0 0 12px rgba(124,58,237,.15); }
+  50%      { box-shadow: 0 0 0 14px rgba(124,58,237,.12); }
 }
-
-.lock-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: white;
-  letter-spacing: -.4px;
-  margin-bottom: 6px;
-}
-.lock-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,.45);
-  margin-bottom: 36px;
-  text-align: center;
-}
-
+.lock-title { font-size: 24px; font-weight: 600; color: white; margin-bottom: 6px; }
+.lock-sub   { font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 36px; text-align: center; line-height: 1.6; }
 .lock-error {
   background: rgba(239,68,68,.12);
-  border: 1px solid rgba(239,68,68,.3);
+  border: 1px solid rgba(239,68,68,.25);
   border-radius: var(--r-md);
   color: #fca5a5;
   font-size: 13px;
   font-weight: 500;
   padding: 10px 16px;
-  margin-bottom: 16px;
   width: 100%;
-  max-width: 360px;
+  max-width: 340px;
   text-align: center;
   display: none;
 }
@@ -140,85 +128,67 @@ body {
   width: 100%;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
-.header {
+/* ── TOPBAR ──────────────────────────────────────────────── */
+.topbar {
+  height: 60px;
   background: var(--v800);
-  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 18px;
+  flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 16px rgba(91,33,182,.35);
+  box-shadow: 0 2px 12px rgba(91,33,182,.30);
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-icon {
-  width: 34px; height: 34px;
-  background: rgba(255,255,255,.15);
-  border: 1.5px solid rgba(255,255,255,.25);
+.topbar-brand { display: flex; align-items: center; gap: 10px; }
+.topbar-logo-box {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.20);
   border-radius: var(--r-sm);
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.logo-icon svg { width: 18px; height: 18px; fill: white; }
-
-.logo-text {
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -.3px;
   color: white;
 }
-.logo-version {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(255,255,255,.5);
-}
-
-.header-actions { display: flex; gap: 8px; }
-
-.btn-icon {
+.topbar-name   { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -.2px; }
+.topbar-ver    { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.topbar-actions { display: flex; gap: 8px; }
+.topbar-btn {
   width: 34px; height: 34px;
-  border: 1.5px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: var(--r-sm);
-  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.80);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-  color: rgba(255,255,255,.8);
-  font-size: 15px;
+  transition: background .2s;
 }
-.btn-icon:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.4); }
+.topbar-btn:active { background: rgba(255,255,255,.22); }
 
-/* ── SCREEN SYSTEM ───────────────────────────────────────── */
-.content { flex: 1; padding: 0 20px 32px; display: flex; flex-direction: column; }
-.screen { display: none; flex-direction: column; flex: 1; }
+/* ── CONTENT / SCREENS ───────────────────────────────────── */
+.content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.screen  { display: none; flex-direction: column; padding: 0 20px 36px; min-height: 100%; }
 .screen.active { display: flex; }
 
 /* ── SCREEN: HOME ────────────────────────────────────────── */
-.home-hero { margin-top: 32px; margin-bottom: 28px; }
-
-.home-tagline {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .14em;
+.home-hero { padding-top: 28px; margin-bottom: 24px; }
+.home-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .10em;
   text-transform: uppercase;
   color: var(--v600);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
-
 .home-title {
-  font-size: 34px;
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -.6px;
-  color: var(--ink);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -.4px;
+  color: var(--text);
+  margin-bottom: 8px;
 }
 .home-title span {
   background: linear-gradient(135deg, var(--v800), var(--v500));
@@ -226,103 +196,95 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.home-sub { font-size: 13px; color: var(--text2); line-height: 1.6; font-weight: 400; }
 
-.home-sub {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--ink-muted);
-  line-height: 1.55;
-  font-weight: 400;
-}
-
-.mode-cards { display: flex; flex-direction: column; gap: 12px; }
+.mode-cards { display: flex; flex-direction: column; gap: 10px; }
 
 .mode-card {
-  border: 2px solid var(--border);
+  border: 1px solid var(--border2);
   border-radius: var(--r-lg);
-  padding: 0;
   cursor: pointer;
-  background: var(--surface);
-  transition: border-color .2s, box-shadow .2s, transform .15s;
+  background: var(--card);
+  transition: box-shadow .2s, transform .15s;
   text-align: left;
   overflow: hidden;
   display: flex;
   align-items: stretch;
+  box-shadow: var(--sh-sm);
 }
-.mode-card:hover { border-color: var(--v600); box-shadow: var(--sh-md); transform: translateY(-1px); }
-.mode-card:active { transform: scale(.98); }
+.mode-card:active { transform: scale(.985); }
 
-.mode-card-stripe {
-  width: 6px;
-  background: var(--v800);
-  flex-shrink: 0;
-}
-.mode-card-body {
-  flex: 1;
-  padding: 20px 16px 20px 18px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.mode-card-icon-wrap {
-  width: 44px; height: 44px;
+.mode-card-stripe { width: 4px; background: var(--v800); flex-shrink: 0; }
+.mode-card-body   { flex: 1; padding: 18px 14px 18px 16px; display: flex; align-items: center; gap: 14px; }
+
+.mode-card-icon-box {
+  width: 42px; height: 42px;
   background: var(--v50);
   border-radius: var(--r-md);
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
+  color: var(--v700);
   flex-shrink: 0;
 }
 .mode-card-info { flex: 1; }
-.mode-card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 3px;
+.mode-card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.mode-card-desc  { font-size: 12px; color: var(--text2); line-height: 1.45; font-weight: 400; }
+
+.mode-card-arrow { color: var(--v300); flex-shrink: 0; }
+
+/* ── INSTALL BANNER ──────────────────────────────────────── */
+.install-banner {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: var(--v50);
+  border: 1px solid var(--v200);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin-top: 18px;
 }
-.mode-card-desc {
-  font-size: 12px;
-  color: var(--ink-muted);
-  line-height: 1.45;
-  font-weight: 400;
-}
-.mode-card-arrow {
-  color: var(--v400);
-  font-size: 22px;
-  transition: transform .2s;
+.install-banner.show { display: flex; }
+.install-text { flex: 1; font-size: 12px; color: var(--text2); line-height: 1.5; }
+.install-text strong { color: var(--v800); font-weight: 600; }
+.btn-install-sm {
   flex-shrink: 0;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--v800);
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
 }
-.mode-card:hover .mode-card-arrow { transform: translateX(3px); }
 
 /* ── SCREEN INNER HEADER ─────────────────────────────────── */
 .screen-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px 0 20px;
+  padding: 18px 0 16px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  flex-shrink: 0;
 }
 .btn-back {
-  width: 34px; height: 34px;
-  border: 1.5px solid var(--border);
+  width: 32px; height: 32px;
+  border: 1px solid var(--border2);
   border-radius: var(--r-sm);
-  background: var(--surface);
+  background: var(--card);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  color: var(--ink-soft);
+  color: var(--text2);
   transition: all .2s;
   flex-shrink: 0;
 }
-.btn-back:hover { border-color: var(--v600); background: var(--v50); }
-
-.screen-title { font-size: 18px; font-weight: 700; letter-spacing: -.2px; flex: 1; }
+.btn-back:active { border-color: var(--v600); background: var(--v50); }
+.screen-title { font-size: 17px; font-weight: 600; letter-spacing: -.2px; flex: 1; }
 
 /* ── VIDEO ───────────────────────────────────────────────── */
-.video-wrapper {
-  position: relative;
-  margin-bottom: 16px;
-}
+.video-wrapper { position: relative; margin-bottom: 14px; }
 
 .video-container {
   width: 100%;
@@ -333,11 +295,8 @@ body {
   position: relative;
   box-shadow: var(--sh-lg);
 }
-.video-container video {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
+.video-container video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
 .video-overlay {
   position: absolute;
   inset: 0;
@@ -345,127 +304,122 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  color: white;
+  gap: 8px;
+  color: rgba(255,255,255,.30);
 }
-.video-overlay .ov-icon { font-size: 36px; opacity: .3; }
-.video-overlay .ov-text { font-size: 13px; opacity: .4; font-weight: 500; }
+.ov-icon { color: rgba(255,255,255,.20); }
+.ov-text { font-size: 12px; font-weight: 500; }
 
-/* Fullscreen button */
-.btn-fullscreen {
+/* Video floating buttons */
+.video-btns {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  width: 36px; height: 36px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.btn-video-action {
+  width: 34px; height: 34px;
   background: rgba(0,0,0,.55);
-  border: 1.5px solid rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.20);
   border-radius: var(--r-sm);
   color: white;
-  font-size: 16px;
   cursor: pointer;
   display: none;
   align-items: center;
   justify-content: center;
   transition: background .2s;
-  z-index: 10;
   backdrop-filter: blur(4px);
 }
-.btn-fullscreen.visible { display: flex; }
-.btn-fullscreen:hover { background: rgba(91,33,182,.7); }
+.btn-video-action.visible { display: flex; }
+.btn-video-action:active { background: rgba(91,33,182,.65); }
 
-/* Fullscreen styles */
+/* Fullscreen native styles */
 .video-container:fullscreen,
 .video-container:-webkit-full-screen {
-  border-radius: 0;
-  aspect-ratio: unset;
-  width: 100vw;
-  height: 100vh;
+  border-radius: 0; aspect-ratio: unset; width: 100vw; height: 100vh;
 }
 .video-container:fullscreen video,
-.video-container:-webkit-full-screen video {
-  width: 100%; height: 100%;
-}
-.video-container:fullscreen .btn-fullscreen,
-.video-container:-webkit-full-screen .btn-fullscreen {
-  display: flex;
-}
+.video-container:-webkit-full-screen video { width: 100%; height: 100%; }
+.video-container:fullscreen .btn-video-action,
+.video-container:-webkit-full-screen .btn-video-action { display: flex !important; }
 
 /* ── STATUS BADGE ────────────────────────────────────────── */
 .status-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 100px;
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  margin-bottom: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
 }
-.status-badge .dot { width: 7px; height: 7px; border-radius: 50%; }
-.status-idle     { background: var(--surface-2); color: var(--ink-muted); }
-.status-idle .dot { background: var(--ink-muted); }
-.status-waiting  { background: #fff7ed; color: #92400e; }
+.status-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.status-idle      { background: #f0eef8; color: var(--text3); }
+.status-idle .dot { background: var(--text3); }
+.status-waiting   { background: #fff8ed; color: #92400e; }
 .status-waiting .dot { background: var(--amber); animation: pulse-dot 1.2s ease infinite; }
 .status-connected { background: #ecfdf5; color: #065f46; }
 .status-connected .dot { background: var(--green); }
-.status-error    { background: #fef2f2; color: #991b1b; }
+.status-error     { background: #fef2f2; color: #991b1b; }
 .status-error .dot { background: var(--red); }
 
 @keyframes pulse-dot {
   0%,100% { opacity:1; transform:scale(1); }
-  50%     { opacity:.5; transform:scale(.7); }
+  50%     { opacity:.4; transform:scale(.65); }
 }
 
 /* ── SALA DISPLAY ────────────────────────────────────────── */
 .sala-display {
   background: var(--v50);
-  border: 2px dashed var(--v200);
+  border: 1px dashed var(--v200);
   border-radius: var(--r-md);
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
 }
 .sala-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .1em;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .10em;
   text-transform: uppercase;
-  color: var(--ink-muted);
-  margin-bottom: 6px;
+  color: var(--text3);
+  margin-bottom: 4px;
 }
 .sala-code {
   font-family: var(--font-mono);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 500;
-  letter-spacing: .25em;
+  letter-spacing: .22em;
   color: var(--v800);
 }
-.sala-hint { font-size: 12px; color: var(--ink-muted); margin-top: 5px; }
+.sala-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.sala-row  { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 
-/* QR Button & Modal */
 .btn-qr {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  padding: 7px 14px;
+  gap: 5px;
+  padding: 6px 12px;
   background: var(--v800);
   color: white;
   border: none;
   border-radius: var(--r-sm);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background .2s;
 }
-.btn-qr:hover { background: var(--v900); }
+.btn-qr:active { background: var(--v900); }
 
+/* ── QR MODAL ────────────────────────────────────────────── */
 .qr-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(46,16,101,.7);
+  background: rgba(46,16,101,.65);
   backdrop-filter: blur(6px);
   z-index: 500;
   align-items: center;
@@ -473,80 +427,61 @@ body {
   padding: 24px;
 }
 .qr-modal.open { display: flex; }
-
 .qr-card {
   background: white;
   border-radius: var(--r-xl);
-  padding: 28px 24px 24px;
+  padding: 26px 22px 22px;
   width: 100%;
-  max-width: 320px;
+  max-width: 300px;
   text-align: center;
   box-shadow: var(--sh-lg);
   animation: modal-in .25s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes modal-in {
-  from { opacity:0; transform:scale(.9) translateY(10px); }
+  from { opacity:0; transform:scale(.9) translateY(8px); }
   to   { opacity:1; transform:scale(1) translateY(0); }
 }
-.qr-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--ink);
-  margin-bottom: 4px;
-}
-.qr-sub {
-  font-size: 12px;
-  color: var(--ink-muted);
-  margin-bottom: 20px;
-}
-#qrCodeBox {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-}
+.qr-title  { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.qr-sub    { font-size: 11px; color: var(--text2); margin-bottom: 18px; }
+#qrCodeBox { display: flex; justify-content: center; margin-bottom: 14px; }
 #qrCodeBox canvas, #qrCodeBox img { border-radius: var(--r-sm); }
 .qr-url {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-muted);
+  font-size: 9px;
+  color: var(--text3);
   word-break: break-all;
-  background: var(--surface-2);
+  background: var(--bg);
   border-radius: var(--r-sm);
-  padding: 8px 10px;
-  margin-bottom: 16px;
+  padding: 7px 10px;
+  margin-bottom: 14px;
   text-align: left;
 }
 .btn-qr-close {
   width: 100%;
-  height: 44px;
+  height: 42px;
   background: var(--v800);
   color: white;
   border: none;
   border-radius: var(--r-md);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
-.btn-qr-close:hover { background: var(--v900); }
 
 /* ── INPUT ───────────────────────────────────────────────── */
-.input-group { margin-bottom: 14px; }
-.input-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 7px;
-  display: block;
+.input-group  { margin-bottom: 12px; }
+.input-label  {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--text2); margin-bottom: 6px; display: block;
 }
 .input-field {
   width: 100%;
-  height: 52px;
-  border: 2px solid var(--border);
+  height: 50px;
+  border: 1.5px solid var(--border2);
   border-radius: var(--r-md);
-  background: var(--surface);
+  background: var(--card);
   font-family: var(--font-mono);
   font-size: 22px;
   font-weight: 500;
@@ -558,19 +493,19 @@ body {
   text-transform: uppercase;
 }
 .input-field::placeholder { color: var(--v200); }
-.input-field:focus { border-color: var(--v600); box-shadow: 0 0 0 3px rgba(91,33,182,.1); }
+.input-field:focus { border-color: var(--v600); box-shadow: 0 0 0 3px rgba(91,33,182,.08); }
 
 /* ── BUTTONS ─────────────────────────────────────────────── */
 .btn {
   width: 100%;
-  height: 52px;
+  height: 50px;
   border: none;
   border-radius: var(--r-md);
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .18s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -580,98 +515,83 @@ body {
 .btn-primary {
   background: var(--v800);
   color: white;
-  box-shadow: 0 2px 14px rgba(91,33,182,.3);
+  box-shadow: 0 2px 12px rgba(91,33,182,.25);
 }
-.btn-primary:hover { background: var(--v900); box-shadow: 0 4px 22px rgba(91,33,182,.42); }
-.btn-primary:active { transform: scale(.98); }
+.btn-primary:active { background: var(--v900); transform: scale(.98); }
 .btn-primary:disabled { background: var(--v200); box-shadow: none; cursor: not-allowed; color: white; }
-
 .btn-secondary {
-  background: var(--surface-2);
+  background: var(--card);
   color: var(--v800);
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border2);
 }
-.btn-secondary:hover { border-color: var(--v400); background: var(--v50); }
-
+.btn-secondary:active { border-color: var(--v400); background: var(--v50); }
 .btn-danger {
   background: #fef2f2;
   color: var(--red);
-  border: 1.5px solid #fecaca;
+  border: 1px solid #fecaca;
 }
-.btn-danger:hover { background: #fee2e2; }
+.btn-danger:active { background: #fee2e2; }
 
-.btn + .btn { margin-top: 10px; }
+.btn + .btn { margin-top: 8px; }
 
 .btn-spinner {
-  width: 18px; height: 18px;
-  border: 2.5px solid rgba(255,255,255,.35);
+  width: 17px; height: 17px;
+  border: 2px solid rgba(255,255,255,.30);
   border-top-color: white;
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── DIVIDER / SPACER ────────────────────────────────────── */
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
-.spacer { flex: 1; min-height: 16px; }
-
-/* ── INSTALL BANNER ──────────────────────────────────────── */
-.install-banner {
+/* ── VISIBILITY WARNING ──────────────────────────────────── */
+.visibility-warning {
   display: none;
   align-items: center;
-  gap: 12px;
-  background: var(--v50);
-  border: 1.5px solid var(--v200);
+  gap: 10px;
+  background: #fff8ed;
+  border: 1px solid #fed7aa;
   border-radius: var(--r-md);
-  padding: 14px 16px;
-  margin-top: 16px;
-}
-.install-banner.show { display: flex; }
-.install-text { flex: 1; font-size: 13px; color: var(--ink-soft); line-height: 1.4; font-weight: 500; }
-.install-text strong { color: var(--v800); }
-.btn-install {
-  flex-shrink: 0;
-  height: 34px;
-  padding: 0 14px;
-  background: var(--v800);
-  color: white;
-  border: none;
-  border-radius: var(--r-sm);
-  font-family: var(--font-display);
+  padding: 11px 14px;
+  margin-bottom: 12px;
   font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
+  color: #92400e;
+  line-height: 1.5;
 }
-.btn-install:hover { background: var(--v900); }
+.visibility-warning.show { display: flex; }
+.visibility-warning svg  { flex-shrink: 0; color: var(--amber); }
+
+/* ── DIVIDER / SPACER ────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+.spacer  { flex: 1; min-height: 12px; }
 
 /* ── TOAST ───────────────────────────────────────────────── */
 .toast-container {
   position: fixed;
-  bottom: 24px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   pointer-events: none;
   width: calc(100% - 40px);
   max-width: 440px;
 }
 .toast {
-  background: var(--ink);
+  background: var(--text);
   color: white;
-  padding: 12px 16px;
+  padding: 11px 15px;
   border-radius: var(--r-md);
   font-size: 13px;
   font-weight: 500;
   box-shadow: var(--sh-lg);
-  animation: toast-in .3s cubic-bezier(.34,1.56,.64,1);
+  animation: toast-in .28s cubic-bezier(.34,1.56,.64,1);
 }
 .toast.success { background: #065f46; }
 .toast.error   { background: #991b1b; }
 @keyframes toast-in {
-  from { opacity:0; transform:translateY(16px) scale(.95); }
+  from { opacity:0; transform:translateY(12px) scale(.95); }
   to   { opacity:1; transform:translateY(0) scale(1); }
 }
 </style>
@@ -680,7 +600,12 @@ body {
 
 <!-- ── LOCK SCREEN ──────────────────────────────────────── -->
 <div id="lockScreen">
-  <div class="lock-icon">🔒</div>
+  <div class="lock-icon-wrap">
+    <svg class="icon icon-lg" viewBox="0 0 24 24">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  </div>
   <div class="lock-title">WebCam DMS</div>
   <div class="lock-sub">Acceso restringido.<br/>Necesitás el link con token válido.</div>
   <div class="lock-error" id="lockError">Token inválido o no autorizado.</div>
@@ -689,85 +614,141 @@ body {
 <!-- ── APP ──────────────────────────────────────────────── -->
 <div class="app" id="appContainer" style="display:none">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo-box">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/>
+        </svg>
       </div>
       <div>
-        <div class="logo-text">WebCam DMS</div>
-        <div class="logo-version" id="versionDisplay">v2.0</div>
+        <div class="topbar-name">WebCam DMS</div>
+        <div class="topbar-ver" id="versionDisplay">v3.0</div>
       </div>
     </div>
-    <div class="header-actions">
-      <button class="btn-icon" title="Actualizar app" onclick="updateApp()">↻</button>
+    <div class="topbar-actions">
+      <button class="topbar-btn" title="Actualizar app" onclick="updateApp()">
+        <svg class="icon icon-sm" viewBox="0 0 24 24">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
     </div>
   </header>
 
   <div class="content">
 
-    <!-- ── SCREEN: HOME ───────────────────────────── -->
+    <!-- ── SCREEN: HOME ─────────────────────────────── -->
     <div class="screen active" id="screenHome">
 
       <div class="home-hero">
-        <div class="home-tagline">Red local · WebRTC</div>
+        <div class="home-tag">Red local · WebRTC</div>
         <h1 class="home-title">Cámara en<br/><span>tiempo real</span></h1>
         <p class="home-sub">Transmití desde un celular, mirá desde otro. Sin servidores externos.</p>
       </div>
 
       <div class="mode-cards">
+
         <button class="mode-card" onclick="goTransmit()">
           <div class="mode-card-stripe"></div>
           <div class="mode-card-body">
-            <div class="mode-card-icon-wrap">📷</div>
+            <div class="mode-card-icon-box">
+              <svg class="icon icon-lg" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M20.188 10.934A8 8 0 0 1 12 20a8 8 0 0 1-8.188-9.066"/>
+                <path d="M12 4a8 8 0 0 1 8 8"/>
+              </svg>
+            </div>
             <div class="mode-card-info">
               <div class="mode-card-title">Transmitir</div>
               <div class="mode-card-desc">Usá la cámara de este dispositivo como fuente de video.</div>
             </div>
-            <span class="mode-card-arrow">›</span>
+            <div class="mode-card-arrow">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
         </button>
 
         <button class="mode-card" onclick="goView()">
           <div class="mode-card-stripe" style="background:var(--v600)"></div>
           <div class="mode-card-body">
-            <div class="mode-card-icon-wrap">👁️</div>
+            <div class="mode-card-icon-box" style="background:#f0fdf4; color:#15803d">
+              <svg class="icon icon-lg" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
             <div class="mode-card-info">
               <div class="mode-card-title">Ver</div>
               <div class="mode-card-desc">Conectate a una transmisión activa usando el código de sala.</div>
             </div>
-            <span class="mode-card-arrow">›</span>
+            <div class="mode-card-arrow">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
         </button>
+
       </div>
 
       <div class="spacer"></div>
 
       <div class="install-banner" id="installBanner">
+        <svg class="icon" viewBox="0 0 24 24" style="color:var(--v600)">
+          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
+          <path d="M12 8v8M8 12l4 4 4-4"/>
+        </svg>
         <div class="install-text"><strong>Instalá la app</strong><br/>Acceso rápido desde la pantalla de inicio.</div>
-        <button class="btn-install" onclick="installPWA()">Instalar</button>
+        <button class="btn-install-sm" onclick="installPWA()">Instalar</button>
       </div>
 
     </div>
 
-    <!-- ── SCREEN: TRANSMIT ───────────────────────── -->
+    <!-- ── SCREEN: TRANSMIT ──────────────────────── -->
     <div class="screen" id="screenTransmit">
 
       <div class="screen-header">
-        <button class="btn-back" onclick="goHome()">‹</button>
+        <button class="btn-back" onclick="goHome()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
         <div class="screen-title">Transmitir</div>
+      </div>
+
+      <!-- Aviso de visibilidad (transmisor) -->
+      <div class="visibility-warning" id="txVisibilityWarn">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>App en segundo plano — la transmisión puede interrumpirse. Mantené la pantalla activa.</span>
       </div>
 
       <div class="video-wrapper">
         <div class="video-container" id="txVideoContainer">
           <video id="localVideo" autoplay muted playsinline></video>
           <div class="video-overlay" id="localOverlay">
-            <span class="ov-icon">📷</span>
+            <svg class="icon icon-lg ov-icon" viewBox="0 0 24 24">
+              <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
             <span class="ov-text">Sin cámara activa</span>
           </div>
-          <button class="btn-fullscreen" id="btnFsTx" title="Pantalla completa"
-                  onclick="toggleFullscreen('txVideoContainer', 'btnFsTx')">⛶</button>
+          <!-- Botones flotantes sobre el video -->
+          <div class="video-btns">
+            <button class="btn-video-action" id="btnFlipCam" title="Cambiar cámara"
+                    onclick="flipCamera()">
+              <svg class="icon icon-sm" viewBox="0 0 24 24">
+                <path d="M20 7h-3.5l-1.5-2H9L7.5 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                <path d="M12 10v4M10 12l2 2 2-2"/>
+              </svg>
+            </button>
+            <button class="btn-video-action" id="btnFsTx" title="Pantalla completa"
+                    onclick="toggleFullscreen('txVideoContainer','btnFsTx')">
+              <svg class="icon icon-sm" id="iconFsTx" viewBox="0 0 24 24">
+                <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -780,23 +761,38 @@ body {
         <div class="sala-label">Código de sala</div>
         <div class="sala-code" id="salaCode">—</div>
         <div class="sala-hint">Compartí este código con el otro dispositivo</div>
-        <button class="btn-qr" onclick="showQR()">🔲 Ver QR</button>
+        <div class="sala-row">
+          <button class="btn-qr" onclick="showQR()">
+            <svg class="icon icon-sm" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+              <path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z"/>
+            </svg>
+            Ver QR
+          </button>
+        </div>
       </div>
 
       <button class="btn btn-primary" id="btnStartTx" onclick="startTransmit()">
-        <span>📷</span> Iniciar transmisión
+        <svg class="icon icon-sm" viewBox="0 0 24 24">
+          <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/>
+        </svg>
+        Iniciar transmisión
       </button>
       <button class="btn btn-danger" id="btnStopTx" onclick="stopTransmit()" style="display:none">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
         Detener
       </button>
 
     </div>
 
-    <!-- ── SCREEN: VIEW ───────────────────────────── -->
+    <!-- ── SCREEN: VIEW ──────────────────────────── -->
     <div class="screen" id="screenView">
 
       <div class="screen-header">
-        <button class="btn-back" onclick="goHome()">‹</button>
+        <button class="btn-back" onclick="goHome()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
         <div class="screen-title">Ver transmisión</div>
       </div>
 
@@ -804,12 +800,31 @@ body {
         <div class="video-container" id="rxVideoContainer">
           <video id="remoteVideo" autoplay playsinline></video>
           <div class="video-overlay" id="remoteOverlay">
-            <span class="ov-icon">👁️</span>
+            <svg class="icon icon-lg ov-icon" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
             <span class="ov-text">Sin video</span>
           </div>
-          <button class="btn-fullscreen" id="btnFsRx" title="Pantalla completa"
-                  onclick="toggleFullscreen('rxVideoContainer', 'btnFsRx')">⛶</button>
+          <div class="video-btns">
+            <button class="btn-video-action" id="btnFsRx" title="Pantalla completa"
+                    onclick="toggleFullscreen('rxVideoContainer','btnFsRx')">
+              <svg class="icon icon-sm" id="iconFsRx" viewBox="0 0 24 24">
+                <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+              </svg>
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Aviso de transmisión pausada (visor) -->
+      <div class="visibility-warning" id="rxPausedWarn">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>El transmisor minimizó la app — el video puede estar pausado.</span>
       </div>
 
       <div id="rxStatus" class="status-badge status-idle">
@@ -824,9 +839,16 @@ body {
       </div>
 
       <button class="btn btn-primary" id="btnConnect" onclick="startView()">
-        <span>🔗</span> Conectar
+        <svg class="icon icon-sm" viewBox="0 0 24 24">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        Conectar
       </button>
       <button class="btn btn-danger" id="btnDisconnect" onclick="stopView()" style="display:none">
+        <svg class="icon icon-sm" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
         Desconectar
       </button>
 
@@ -835,7 +857,7 @@ body {
   </div><!-- /content -->
 </div><!-- /app -->
 
-<!-- ── QR MODAL ─────────────────────────────────────────── -->
+<!-- ── QR MODAL ──────────────────────────────────────────── -->
 <div class="qr-modal" id="qrModal" onclick="closeQR(event)">
   <div class="qr-card">
     <div class="qr-title">Compartir sala</div>
@@ -846,17 +868,17 @@ body {
   </div>
 </div>
 
-<!-- ── TOASTS ────────────────────────────────────────────── -->
+<!-- ── TOASTS ─────────────────────────────────────────────── -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ── SCRIPTS ───────────────────────────────────────────── -->
+<!-- ── SCRIPTS ────────────────────────────────────────────── -->
 <script>
 // ============================================================
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:      'v2.0',
-  GAS_URL:         'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
+  VERSION_UI:       'v3.0',
+  GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -873,29 +895,25 @@ let sala          = null;
 let pollTimer     = null;
 let deferInstall  = null;
 let currentToken  = null;
+let facingMode    = 'environment'; // cámara trasera por defecto
 
 // ============================================================
-//  TOKEN AUTH — valida contra GAS/Sheets al iniciar
+//  TOKEN AUTH
 // ============================================================
 async function initAuth() {
   const params = new URLSearchParams(window.location.search);
   const token  = params.get('token');
-
-  if (!token) {
-    showLock(false); // sin token → pantalla de bloqueo
-    return;
-  }
-
-  // Llamar GAS para validar
+  if (!token) { showLock(false); return; }
   try {
     const res = await gas({ action: 'validateToken', token });
     if (res.ok) {
       currentToken = token;
       document.getElementById('lockScreen').classList.remove('visible');
-      document.getElementById('appContainer').style.display = 'flex';
-      document.getElementById('appContainer').style.flexDirection = 'column';
+      const ac = document.getElementById('appContainer');
+      ac.style.display       = 'flex';
+      ac.style.flexDirection = 'column';
     } else {
-      showLock(true); // token inválido
+      showLock(true);
     }
   } catch (e) {
     showLock(true);
@@ -905,39 +923,103 @@ async function initAuth() {
 function showLock(showError) {
   document.getElementById('lockScreen').classList.add('visible');
   document.getElementById('appContainer').style.display = 'none';
-  if (showError) {
-    document.getElementById('lockError').classList.add('show');
-  }
+  if (showError) document.getElementById('lockError').classList.add('show');
 }
 
 // ============================================================
 //  FULLSCREEN
 // ============================================================
 function toggleFullscreen(containerId, btnId) {
-  const el  = document.getElementById(containerId);
-  const btn = document.getElementById(btnId);
-
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+  const el = document.getElementById(containerId);
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (!isFs) {
     const req = el.requestFullscreen || el.webkitRequestFullscreen;
     if (req) req.call(el);
-    btn.textContent = '✕';
-    btn.title = 'Salir de pantalla completa';
   } else {
     const exit = document.exitFullscreen || document.webkitExitFullscreen;
     if (exit) exit.call(document);
-    btn.textContent = '⛶';
-    btn.title = 'Pantalla completa';
   }
 }
 
-document.addEventListener('fullscreenchange',        onFsChange);
-document.addEventListener('webkitfullscreenchange',  onFsChange);
+document.addEventListener('fullscreenchange',       onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
 
 function onFsChange() {
   const inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  if (!inFs) {
-    document.getElementById('btnFsTx').textContent = '⛶';
-    document.getElementById('btnFsRx').textContent = '⛶';
+  // Swap icon: expand ↔ compress
+  ['Tx','Rx'].forEach(side => {
+    const iconEl = document.getElementById('iconFs' + side);
+    if (!iconEl) return;
+    if (inFs) {
+      iconEl.innerHTML = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="20" x2="3" y2="13"/><line x1="21" y1="3" x2="14" y2="10"/>';
+    } else {
+      iconEl.innerHTML = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>';
+    }
+  });
+}
+
+// ============================================================
+//  FLIP CAMERA (frontal / trasera)
+// ============================================================
+async function flipCamera() {
+  if (!localStream) return;
+  facingMode = (facingMode === 'environment') ? 'user' : 'environment';
+
+  // Detener tracks actuales
+  localStream.getTracks().forEach(t => t.stop());
+
+  try {
+    const newStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode },
+      audio: false
+    });
+
+    // Reemplazar track en PeerConnection si existe
+    const newTrack = newStream.getVideoTracks()[0];
+    if (pc) {
+      const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+      if (sender) await sender.replaceTrack(newTrack);
+    }
+
+    localStream = newStream;
+    document.getElementById('localVideo').srcObject = newStream;
+    toast(facingMode === 'user' ? 'Cámara frontal' : 'Cámara trasera');
+  } catch (err) {
+    toast('No se pudo cambiar de cámara', 'error');
+    // Revertir
+    facingMode = (facingMode === 'environment') ? 'user' : 'environment';
+  }
+}
+
+// ============================================================
+//  VISIBILITY CHANGE — detección de background
+// ============================================================
+document.addEventListener('visibilitychange', () => {
+  const hidden = document.hidden;
+
+  // Si el transmisor minimiza → mostrar advertencia local
+  if (localStream) {
+    document.getElementById('txVisibilityWarn').classList.toggle('show', hidden);
+  }
+
+  // Si el visor detecta que la app vuelve al frente → verificar estado
+  if (!hidden && pc && pc.connectionState === 'connected') {
+    document.getElementById('rxPausedWarn').classList.remove('show');
+  }
+
+  // Si hay visor conectado y el transmisor avisa vía señalización
+  // (aproximación: si la conexión estaba bien y ahora el visor vuelve, avisa)
+  if (!hidden && pc && pc.connectionState === 'disconnected') {
+    document.getElementById('rxPausedWarn').classList.add('show');
+  }
+});
+
+// Aviso en el visor si la conexión se pierde (transmisor minimizó)
+function onRxConnectionChange(state) {
+  if (state === 'disconnected' || state === 'failed') {
+    document.getElementById('rxPausedWarn').classList.add('show');
+  } else if (state === 'connected') {
+    document.getElementById('rxPausedWarn').classList.remove('show');
   }
 }
 
@@ -948,29 +1030,18 @@ function showQR() {
   if (!sala || !currentToken) return;
   const url = `${location.origin}${location.pathname}?token=${currentToken}&sala=${sala}`;
   document.getElementById('qrUrl').textContent = url;
-
   const box = document.getElementById('qrCodeBox');
   box.innerHTML = '';
   new QRCode(box, {
-    text:            url,
-    width:           200,
-    height:          200,
-    colorDark:       '#2e1065',
-    colorLight:      '#ffffff',
-    correctLevel:    QRCode.CorrectLevel.M
+    text: url, width: 200, height: 200,
+    colorDark: '#2e1065', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
   });
-
   document.getElementById('qrModal').classList.add('open');
 }
+function closeQR(e) { if (e.target === document.getElementById('qrModal')) closeQRBtn(); }
+function closeQRBtn() { document.getElementById('qrModal').classList.remove('open'); }
 
-function closeQR(e) {
-  if (e.target === document.getElementById('qrModal')) closeQRBtn();
-}
-function closeQRBtn() {
-  document.getElementById('qrModal').classList.remove('open');
-}
-
-// Auto-conectar si viene sala en URL (desde QR)
 function checkAutoConnect() {
   const params = new URLSearchParams(window.location.search);
   const salaParam = params.get('sala');
@@ -1000,13 +1071,13 @@ function installPWA() {
 }
 
 function updateApp() {
+  toast('Actualizando…');
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistration().then(reg => {
       if (reg) reg.update().then(() => location.reload());
       else location.reload();
     });
   } else location.reload();
-  toast('Actualizando…');
 }
 
 if ('serviceWorker' in navigator) {
@@ -1065,9 +1136,9 @@ function setTxStatus(state, label) {
   const el = document.getElementById('txStatus');
   el.className = 'status-badge status-' + state;
   document.getElementById('txStatusText').textContent = label;
-  // Mostrar/ocultar botón fullscreen según estado
-  const fsBtnVisible = (state === 'connected' || state === 'waiting');
-  document.getElementById('btnFsTx').classList.toggle('visible', fsBtnVisible);
+  const show = (state === 'connected' || state === 'waiting');
+  document.getElementById('btnFsTx').classList.toggle('visible', show);
+  document.getElementById('btnFlipCam').classList.toggle('visible', show || state === 'waiting');
 }
 
 function setRxStatus(state, label) {
@@ -1087,12 +1158,11 @@ async function startTransmit() {
 
   try {
     localStream = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'environment' },
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode },
       audio: false
     });
 
-    const vid = document.getElementById('localVideo');
-    vid.srcObject = localStream;
+    document.getElementById('localVideo').srcObject = localStream;
     document.getElementById('localOverlay').style.display = 'none';
 
     sala = genSala();
@@ -1131,6 +1201,9 @@ async function startTransmit() {
     btn.style.display = 'none';
     document.getElementById('btnStopTx').style.display = 'flex';
 
+    // Mostrar botón flip mientras espera o está conectado
+    document.getElementById('btnFlipCam').classList.add('visible');
+
     toast('Sala ' + sala + ' activa. Compartí el código.');
 
     startPolling(async () => {
@@ -1147,7 +1220,7 @@ async function startTransmit() {
     toast('Error: ' + err.message, 'error');
     setTxStatus('error', 'Error');
     btn.disabled = false;
-    btn.innerHTML = '<span>📷</span> Iniciar transmisión';
+    btn.innerHTML = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg> Iniciar transmisión`;
   }
 }
 
@@ -1166,16 +1239,19 @@ function stopTransmit() {
   if (pc)          { pc.close(); pc = null; }
   if (sala)        { gas({ action: 'clearSession', sala }).catch(() => {}); sala = null; }
 
-  const vid = document.getElementById('localVideo');
-  vid.srcObject = null;
+  facingMode = 'environment'; // reset
+
+  document.getElementById('localVideo').srcObject = null;
   document.getElementById('localOverlay').style.display = 'flex';
   document.getElementById('salaDisplay').style.display  = 'none';
   document.getElementById('btnFsTx').classList.remove('visible');
+  document.getElementById('btnFlipCam').classList.remove('visible');
+  document.getElementById('txVisibilityWarn').classList.remove('show');
 
   const btnStart = document.getElementById('btnStartTx');
-  btnStart.style.display   = 'flex';
-  btnStart.disabled        = false;
-  btnStart.innerHTML       = '<span>📷</span> Iniciar transmisión';
+  btnStart.style.display = 'flex';
+  btnStart.disabled      = false;
+  btnStart.innerHTML     = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg> Iniciar transmisión`;
   document.getElementById('btnStopTx').style.display = 'none';
 
   setTxStatus('idle', 'Inactivo');
@@ -1225,6 +1301,7 @@ async function startView() {
 
   pc.onconnectionstatechange = () => {
     const s = pc.connectionState;
+    onRxConnectionChange(s);
     if (s === 'connected') {
       setRxStatus('connected', 'Conectado');
       toast('¡Video en vivo!', 'success');
@@ -1258,19 +1335,19 @@ function stopView() {
   stopPolling();
   if (pc) { pc.close(); pc = null; }
   sala = null;
-  const vid = document.getElementById('remoteVideo');
-  vid.srcObject = null;
+  document.getElementById('remoteVideo').srcObject = null;
   document.getElementById('remoteOverlay').style.display = 'flex';
   document.getElementById('btnFsRx').classList.remove('visible');
+  document.getElementById('rxPausedWarn').classList.remove('show');
   resetViewUI();
   setRxStatus('idle', 'Inactivo');
 }
 
 function resetViewUI() {
   const btn = document.getElementById('btnConnect');
-  btn.style.display   = 'flex';
-  btn.disabled        = false;
-  btn.innerHTML       = '<span>🔗</span> Conectar';
+  btn.style.display  = 'flex';
+  btn.disabled       = false;
+  btn.innerHTML      = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Conectar`;
   document.getElementById('btnDisconnect').style.display  = 'none';
   document.getElementById('salaInputGroup').style.display = 'block';
 }
@@ -1286,7 +1363,6 @@ function stopPolling()    { if (pollTimer) { clearInterval(pollTimer); pollTimer
 // ============================================================
 document.getElementById('versionDisplay').textContent = CONFIG.VERSION_UI;
 initAuth().then(() => {
-  // Si vino sala en URL (desde QR), auto-prellenar
   if (currentToken) checkAutoConnect();
 });
 </script>
