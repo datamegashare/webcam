@@ -42,17 +42,26 @@
   --red:     #ef4444;
   --amber:   #f59e0b;
 
-  --font-body:    'DM Sans', system-ui, sans-serif;
-  --font-mono:    'DM Mono', monospace;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', monospace;
 
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 18px;
-  --r-xl: 24px;
-
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
   --sh-sm: 0 1px 4px rgba(91,33,182,.07);
   --sh-md: 0 4px 20px rgba(91,33,182,.12);
   --sh-lg: 0 12px 40px rgba(91,33,182,.20);
+}
+
+/* ── MODO OSCURO ─────────────────────────────────────────── */
+body.dark {
+  --bg:      #0f0d1a;
+  --card:    #1c1828;
+  --text:    #f0eeff;
+  --text2:   #a89ec4;
+  --text3:   #6b6085;
+  --border:  rgba(196,181,253,0.08);
+  --border2: rgba(196,181,253,0.15);
+  --v50:     #1c1828;
+  --v100:    #251f38;
 }
 
 /* ── RESET ───────────────────────────────────────────────── */
@@ -66,6 +75,7 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  transition: background .3s, color .3s;
 }
 
 /* ── SVG ICON HELPER ─────────────────────────────────────── */
@@ -73,20 +83,34 @@ body {
 .icon-sm { width: 16px; height: 16px; }
 .icon-lg { width: 24px; height: 24px; }
 
+/* ── BROWSER WARNING ─────────────────────────────────────── */
+#browserWarn {
+  display: none;
+  background: #fef3c7;
+  border-bottom: 1px solid #fcd34d;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #78350f;
+  text-align: center;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+#browserWarn.show { display: flex; }
+
 /* ── LOCK SCREEN ─────────────────────────────────────────── */
 #lockScreen {
   display: none;
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: var(--v950);
   z-index: 9999;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: center; justify-content: center;
   padding: 32px 24px;
 }
 #lockScreen.visible { display: flex; }
-
 .lock-icon-wrap {
   width: 72px; height: 72px;
   background: rgba(255,255,255,.07);
@@ -107,62 +131,40 @@ body {
   background: rgba(239,68,68,.12);
   border: 1px solid rgba(239,68,68,.25);
   border-radius: var(--r-md);
-  color: #fca5a5;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 10px 16px;
-  width: 100%;
-  max-width: 340px;
-  text-align: center;
-  display: none;
+  color: #fca5a5; font-size: 13px; font-weight: 500;
+  padding: 10px 16px; width: 100%; max-width: 340px;
+  text-align: center; display: none;
 }
 .lock-error.show { display: block; }
 
 /* ── LAYOUT ──────────────────────────────────────────────── */
-.app {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  max-width: 480px;
-  margin: 0 auto;
-  width: 100%;
-}
+.app { flex: 1; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; width: 100%; }
 
 /* ── TOPBAR ──────────────────────────────────────────────── */
 .topbar {
   height: 60px;
   background: var(--v800);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 0 18px;
   flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   box-shadow: 0 2px 12px rgba(91,33,182,.30);
 }
-
 .topbar-brand { display: flex; align-items: center; gap: 10px; }
 .topbar-logo-box {
   width: 32px; height: 32px;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.20);
   border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  color: white;
+  display: flex; align-items: center; justify-content: center; color: white;
 }
-.topbar-name   { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -.2px; }
-.topbar-ver    { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.topbar-name { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -.2px; }
+.topbar-ver  { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,.45); margin-top: 1px; }
 .topbar-actions { display: flex; gap: 8px; }
 .topbar-btn {
   width: 34px; height: 34px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: var(--r-sm);
-  color: rgba(255,255,255,.80);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--r-sm); color: rgba(255,255,255,.80);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: background .2s;
 }
 .topbar-btn:active { background: rgba(255,255,255,.22); }
@@ -174,188 +176,148 @@ body {
 
 /* ── SCREEN: HOME ────────────────────────────────────────── */
 .home-hero { padding-top: 28px; margin-bottom: 24px; }
-.home-tag {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  color: var(--v600);
-  margin-bottom: 8px;
-}
-.home-title {
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -.4px;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-.home-title span {
-  background: linear-gradient(135deg, var(--v800), var(--v500));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+.home-tag  { font-size: 11px; font-weight: 600; letter-spacing: .10em; text-transform: uppercase; color: var(--v600); margin-bottom: 8px; }
+.home-title { font-size: 30px; font-weight: 600; line-height: 1.18; letter-spacing: -.4px; color: var(--text); margin-bottom: 8px; }
+.home-title span { background: linear-gradient(135deg, var(--v800), var(--v500)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .home-sub { font-size: 13px; color: var(--text2); line-height: 1.6; font-weight: 400; }
 
 .mode-cards { display: flex; flex-direction: column; gap: 10px; }
-
 .mode-card {
-  border: 1px solid var(--border2);
-  border-radius: var(--r-lg);
-  cursor: pointer;
-  background: var(--card);
+  border: 1px solid var(--border2); border-radius: var(--r-lg);
+  cursor: pointer; background: var(--card);
   transition: box-shadow .2s, transform .15s;
-  text-align: left;
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;
-  box-shadow: var(--sh-sm);
+  text-align: left; overflow: hidden;
+  display: flex; align-items: stretch; box-shadow: var(--sh-sm);
 }
 .mode-card:active { transform: scale(.985); }
-
 .mode-card-stripe { width: 4px; background: var(--v800); flex-shrink: 0; }
 .mode-card-body   { flex: 1; padding: 18px 14px 18px 16px; display: flex; align-items: center; gap: 14px; }
-
-.mode-card-icon-box {
-  width: 42px; height: 42px;
-  background: var(--v50);
-  border-radius: var(--r-md);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--v700);
-  flex-shrink: 0;
-}
-.mode-card-info { flex: 1; }
+.mode-card-icon-box { width: 42px; height: 42px; background: var(--v50); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; color: var(--v700); flex-shrink: 0; }
+.mode-card-info  { flex: 1; }
 .mode-card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 .mode-card-desc  { font-size: 12px; color: var(--text2); line-height: 1.45; font-weight: 400; }
-
 .mode-card-arrow { color: var(--v300); flex-shrink: 0; }
 
 /* ── INSTALL BANNER ──────────────────────────────────────── */
-.install-banner {
-  display: none;
-  align-items: center;
-  gap: 12px;
-  background: var(--v50);
-  border: 1px solid var(--v200);
-  border-radius: var(--r-md);
-  padding: 12px 14px;
-  margin-top: 18px;
-}
+.install-banner { display: none; align-items: center; gap: 12px; background: var(--v50); border: 1px solid var(--v200); border-radius: var(--r-md); padding: 12px 14px; margin-top: 18px; }
 .install-banner.show { display: flex; }
 .install-text { flex: 1; font-size: 12px; color: var(--text2); line-height: 1.5; }
 .install-text strong { color: var(--v800); font-weight: 600; }
-.btn-install-sm {
-  flex-shrink: 0;
-  height: 32px;
-  padding: 0 12px;
-  background: var(--v800);
-  color: white;
-  border: none;
-  border-radius: var(--r-sm);
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.btn-install-sm { flex-shrink: 0; height: 32px; padding: 0 12px; background: var(--v800); color: white; border: none; border-radius: var(--r-sm); font-family: var(--font-body); font-size: 12px; font-weight: 600; cursor: pointer; }
 
 /* ── SCREEN INNER HEADER ─────────────────────────────────── */
 .screen-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   padding: 18px 0 16px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 18px;
-  flex-shrink: 0;
+  margin-bottom: 18px; flex-shrink: 0;
 }
 .btn-back {
   width: 32px; height: 32px;
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  background: var(--card);
-  cursor: pointer;
+  border: 1px solid var(--border2); border-radius: var(--r-sm);
+  background: var(--card); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  color: var(--text2);
-  transition: all .2s;
-  flex-shrink: 0;
+  color: var(--text2); transition: all .2s; flex-shrink: 0;
 }
 .btn-back:active { border-color: var(--v600); background: var(--v50); }
 .screen-title { font-size: 17px; font-weight: 600; letter-spacing: -.2px; flex: 1; }
 
 /* ── VIDEO ───────────────────────────────────────────────── */
 .video-wrapper { position: relative; margin-bottom: 14px; }
-
 .video-container {
-  width: 100%;
-  aspect-ratio: 16/9;
-  background: var(--v950);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  position: relative;
-  box-shadow: var(--sh-lg);
+  width: 100%; aspect-ratio: 16/9;
+  background: var(--v950); border-radius: var(--r-lg);
+  overflow: hidden; position: relative; box-shadow: var(--sh-lg);
 }
 .video-container video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
 .video-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: rgba(255,255,255,.30);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: rgba(255,255,255,.30);
 }
 .ov-icon { color: rgba(255,255,255,.20); }
 .ov-text { font-size: 12px; font-weight: 500; }
 
 /* Video floating buttons */
-.video-btns {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 6px;
-  z-index: 10;
-}
+.video-btns { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 6px; z-index: 10; }
 .btn-video-action {
   width: 34px; height: 34px;
-  background: rgba(0,0,0,.55);
-  border: 1px solid rgba(255,255,255,.20);
-  border-radius: var(--r-sm);
-  color: white;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background .2s;
-  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.20);
+  border-radius: var(--r-sm); color: white; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  transition: background .2s; backdrop-filter: blur(4px);
 }
 .btn-video-action.visible { display: flex; }
-.btn-video-action:active { background: rgba(91,33,182,.65); }
+.btn-video-action:active  { background: rgba(91,33,182,.65); }
 
-/* Fullscreen native styles */
+/* Fullscreen */
 .video-container:fullscreen,
-.video-container:-webkit-full-screen {
-  border-radius: 0; aspect-ratio: unset; width: 100vw; height: 100vh;
-}
+.video-container:-webkit-full-screen { border-radius: 0; aspect-ratio: unset; width: 100vw; height: 100vh; }
 .video-container:fullscreen video,
 .video-container:-webkit-full-screen video { width: 100%; height: 100%; }
 .video-container:fullscreen .btn-video-action,
 .video-container:-webkit-full-screen .btn-video-action { display: flex !important; }
 
-/* ── STATUS BADGE ────────────────────────────────────────── */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 12px;
+/* ── GADGET — reloj + clima (solo TX activo) ─────────────── */
+.tx-gadget {
+  display: none;
+  background: var(--v950);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--sh-md);
+  flex-direction: column;
+  gap: 10px;
 }
+.tx-gadget.show { display: flex; }
+
+.gadget-clock {
+  font-family: var(--font-mono);
+  font-size: 44px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: .06em;
+  line-height: 1;
+  text-align: center;
+}
+.gadget-clock .clock-secs {
+  font-size: 28px;
+  color: rgba(255,255,255,.45);
+}
+
+.gadget-weather {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.gadget-temp {
+  font-size: 26px;
+  font-weight: 500;
+  color: #fff;
+  font-family: var(--font-mono);
+}
+.gadget-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,.50);
+  font-weight: 400;
+  text-align: left;
+  line-height: 1.4;
+}
+.gadget-weather-loading {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  font-style: italic;
+  text-align: center;
+  width: 100%;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* ── STATUS BADGE ────────────────────────────────────────── */
+.status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 100px; font-size: 12px; font-weight: 500; margin-bottom: 12px; }
 .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .status-idle      { background: #f0eef8; color: var(--text3); }
 .status-idle .dot { background: var(--text3); }
@@ -365,235 +327,97 @@ body {
 .status-connected .dot { background: var(--green); }
 .status-error     { background: #fef2f2; color: #991b1b; }
 .status-error .dot { background: var(--red); }
+@keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.65); } }
 
-@keyframes pulse-dot {
-  0%,100% { opacity:1; transform:scale(1); }
-  50%     { opacity:.4; transform:scale(.65); }
+/* ── SALA SELECT ─────────────────────────────────────────── */
+.sala-select-wrap { margin-bottom: 14px; }
+.sala-select-label { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; display: block; }
+.sala-select {
+  width: 100%; height: 50px;
+  border: 1.5px solid var(--border2); border-radius: var(--r-md);
+  background: var(--card); color: var(--text);
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  padding: 0 14px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235c5470' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
 }
+.sala-select:focus { border-color: var(--v600); box-shadow: 0 0 0 3px rgba(91,33,182,.08); }
+.sala-select option { background: var(--card); color: var(--text); }
+.sala-select-loading { font-size: 12px; color: var(--text3); font-style: italic; padding: 6px 2px; }
+.sala-select-empty   { font-size: 12px; color: var(--red); padding: 6px 2px; }
 
-/* ── SALA DISPLAY ────────────────────────────────────────── */
-.sala-display {
-  background: var(--v50);
-  border: 1px dashed var(--v200);
-  border-radius: var(--r-md);
-  padding: 14px 16px;
-  margin-bottom: 14px;
-}
-.sala-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 4px;
-}
-.sala-code {
-  font-family: var(--font-mono);
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: .22em;
-  color: var(--v800);
-}
-.sala-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
-.sala-row  { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+/* ── SALA DISPLAY (TX activo) ────────────────────────────── */
+.sala-display { background: var(--v50); border: 1px dashed var(--v200); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 14px; }
+.sala-label   { font-size: 10px; font-weight: 600; letter-spacing: .10em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+.sala-code    { font-family: var(--font-mono); font-size: 22px; font-weight: 500; letter-spacing: .12em; color: var(--v800); }
+.sala-hint    { font-size: 11px; color: var(--text3); margin-top: 4px; }
 
-.btn-qr {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  background: var(--v800);
-  color: white;
-  border: none;
-  border-radius: var(--r-sm);
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background .2s;
+/* ── TORCH BUTTON (visor) ────────────────────────────────── */
+.torch-wrap { display: none; margin-bottom: 12px; }
+.torch-wrap.show { display: block; }
+.btn-torch {
+  width: 100%; height: 46px;
+  border: 1.5px solid var(--border2); border-radius: var(--r-md);
+  background: var(--card); color: var(--text);
+  font-family: var(--font-body); font-size: 14px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 8px; transition: all .2s;
 }
-.btn-qr:active { background: var(--v900); }
-
-/* ── QR MODAL ────────────────────────────────────────────── */
-.qr-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(46,16,101,.65);
-  backdrop-filter: blur(6px);
-  z-index: 500;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-.qr-modal.open { display: flex; }
-.qr-card {
-  background: white;
-  border-radius: var(--r-xl);
-  padding: 26px 22px 22px;
-  width: 100%;
-  max-width: 300px;
-  text-align: center;
-  box-shadow: var(--sh-lg);
-  animation: modal-in .25s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes modal-in {
-  from { opacity:0; transform:scale(.9) translateY(8px); }
-  to   { opacity:1; transform:scale(1) translateY(0); }
-}
-.qr-title  { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-.qr-sub    { font-size: 11px; color: var(--text2); margin-bottom: 18px; }
-#qrCodeBox { display: flex; justify-content: center; margin-bottom: 14px; }
-#qrCodeBox canvas, #qrCodeBox img { border-radius: var(--r-sm); }
-.qr-url {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--text3);
-  word-break: break-all;
-  background: var(--bg);
-  border-radius: var(--r-sm);
-  padding: 7px 10px;
-  margin-bottom: 14px;
-  text-align: left;
-}
-.btn-qr-close {
-  width: 100%;
-  height: 42px;
-  background: var(--v800);
-  color: white;
-  border: none;
-  border-radius: var(--r-md);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.btn-torch.on  { background: #fef9c3; border-color: #fde047; color: #713f12; }
+.btn-torch:disabled { opacity: .4; cursor: not-allowed; }
+.btn-torch:not(:disabled):active { transform: scale(.98); }
 
 /* ── INPUT ───────────────────────────────────────────────── */
 .input-group  { margin-bottom: 12px; }
-.input-label  {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: .07em; text-transform: uppercase;
-  color: var(--text2); margin-bottom: 6px; display: block;
-}
-.input-field {
-  width: 100%;
-  height: 50px;
-  border: 1.5px solid var(--border2);
-  border-radius: var(--r-md);
-  background: var(--card);
-  font-family: var(--font-mono);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: .15em;
-  text-align: center;
-  color: var(--v800);
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-  text-transform: uppercase;
-}
+.input-label  { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; display: block; }
+.input-field  { width: 100%; height: 50px; border: 1.5px solid var(--border2); border-radius: var(--r-md); background: var(--card); font-family: var(--font-mono); font-size: 22px; font-weight: 500; letter-spacing: .15em; text-align: center; color: var(--v800); outline: none; transition: border-color .2s, box-shadow .2s; text-transform: uppercase; }
 .input-field::placeholder { color: var(--v200); }
 .input-field:focus { border-color: var(--v600); box-shadow: 0 0 0 3px rgba(91,33,182,.08); }
 
 /* ── BUTTONS ─────────────────────────────────────────────── */
-.btn {
-  width: 100%;
-  height: 50px;
-  border: none;
-  border-radius: var(--r-md);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .18s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  letter-spacing: -.1px;
-}
-.btn-primary {
-  background: var(--v800);
-  color: white;
-  box-shadow: 0 2px 12px rgba(91,33,182,.25);
-}
+.btn { width: 100%; height: 50px; border: none; border-radius: var(--r-md); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: -.1px; }
+.btn-primary  { background: var(--v800); color: white; box-shadow: 0 2px 12px rgba(91,33,182,.25); }
 .btn-primary:active { background: var(--v900); transform: scale(.98); }
 .btn-primary:disabled { background: var(--v200); box-shadow: none; cursor: not-allowed; color: white; }
-.btn-secondary {
-  background: var(--card);
-  color: var(--v800);
-  border: 1.5px solid var(--border2);
-}
+.btn-secondary { background: var(--card); color: var(--v800); border: 1.5px solid var(--border2); }
 .btn-secondary:active { border-color: var(--v400); background: var(--v50); }
-.btn-danger {
-  background: #fef2f2;
-  color: var(--red);
-  border: 1px solid #fecaca;
-}
+.btn-danger   { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
 .btn-danger:active { background: #fee2e2; }
-
-.btn + .btn { margin-top: 8px; }
-
-.btn-spinner {
-  width: 17px; height: 17px;
-  border: 2px solid rgba(255,255,255,.30);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
+.btn + .btn   { margin-top: 8px; }
+.btn-spinner  { width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.30); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── VISIBILITY WARNING ──────────────────────────────────── */
-.visibility-warning {
-  display: none;
-  align-items: center;
-  gap: 10px;
-  background: #fff8ed;
-  border: 1px solid #fed7aa;
-  border-radius: var(--r-md);
-  padding: 11px 14px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  color: #92400e;
-  line-height: 1.5;
-}
+.visibility-warning { display: none; align-items: center; gap: 10px; background: #fff8ed; border: 1px solid #fed7aa; border-radius: var(--r-md); padding: 11px 14px; margin-bottom: 12px; font-size: 12px; color: #92400e; line-height: 1.5; }
 .visibility-warning.show { display: flex; }
 .visibility-warning svg  { flex-shrink: 0; color: var(--amber); }
+
+/* ── QR MODAL ────────────────────────────────────────────── */
+.qr-modal { display: none; position: fixed; inset: 0; background: rgba(46,16,101,.65); backdrop-filter: blur(6px); z-index: 500; align-items: center; justify-content: center; padding: 24px; }
+.qr-modal.open { display: flex; }
+.qr-card { background: white; border-radius: var(--r-xl); padding: 26px 22px 22px; width: 100%; max-width: 300px; text-align: center; box-shadow: var(--sh-lg); animation: modal-in .25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes modal-in { from { opacity:0; transform:scale(.9) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.qr-title  { font-size: 15px; font-weight: 600; color: #1A1A1A; margin-bottom: 3px; }
+.qr-sub    { font-size: 11px; color: #5c5470; margin-bottom: 18px; }
+#qrCodeBox { display: flex; justify-content: center; margin-bottom: 14px; }
+#qrCodeBox canvas, #qrCodeBox img { border-radius: var(--r-sm); }
+.qr-url    { font-family: var(--font-mono); font-size: 9px; color: #9d94b5; word-break: break-all; background: #F5F4F0; border-radius: var(--r-sm); padding: 7px 10px; margin-bottom: 14px; text-align: left; }
+.btn-qr-close { width: 100%; height: 42px; background: var(--v800); color: white; border: none; border-radius: var(--r-md); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; }
 
 /* ── DIVIDER / SPACER ────────────────────────────────────── */
 .divider { height: 1px; background: var(--border); margin: 14px 0; }
 .spacer  { flex: 1; min-height: 12px; }
 
 /* ── TOAST ───────────────────────────────────────────────── */
-.toast-container {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  pointer-events: none;
-  width: calc(100% - 40px);
-  max-width: 440px;
-}
-.toast {
-  background: var(--text);
-  color: white;
-  padding: 11px 15px;
-  border-radius: var(--r-md);
-  font-size: 13px;
-  font-weight: 500;
-  box-shadow: var(--sh-lg);
-  animation: toast-in .28s cubic-bezier(.34,1.56,.64,1);
-}
-.toast.success { background: #065f46; }
-.toast.error   { background: #991b1b; }
-@keyframes toast-in {
-  from { opacity:0; transform:translateY(12px) scale(.95); }
-  to   { opacity:1; transform:translateY(0) scale(1); }
-}
+.toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; pointer-events: none; width: calc(100% - 40px); max-width: 440px; }
+.toast { background: var(--text); color: var(--bg); padding: 11px 15px; border-radius: var(--r-md); font-size: 13px; font-weight: 500; box-shadow: var(--sh-lg); animation: toast-in .28s cubic-bezier(.34,1.56,.64,1); }
+.toast.success { background: #065f46; color: white; }
+.toast.error   { background: #991b1b; color: white; }
+@keyframes toast-in { from { opacity:0; transform:translateY(12px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
 </style>
 </head>
 <body>
@@ -614,6 +438,15 @@ body {
 <!-- ── APP ──────────────────────────────────────────────── -->
 <div class="app" id="appContainer" style="display:none">
 
+  <!-- BROWSER WARNING -->
+  <div id="browserWarn">
+    <svg class="icon icon-sm" viewBox="0 0 24 24" style="flex-shrink:0">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span>Para mejor experiencia usá <strong>Chrome</strong>. Algunas funciones pueden fallar en este navegador.</span>
+  </div>
+
   <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-brand">
@@ -624,10 +457,17 @@ body {
       </div>
       <div>
         <div class="topbar-name">WebCam DMS</div>
-        <div class="topbar-ver" id="versionDisplay">v3.0</div>
+        <div class="topbar-ver" id="versionDisplay">v4.0</div>
       </div>
     </div>
     <div class="topbar-actions">
+      <!-- Modo oscuro -->
+      <button class="topbar-btn" id="btnDarkMode" title="Modo oscuro" onclick="toggleDark()">
+        <svg class="icon icon-sm" id="iconDark" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <!-- Refresh -->
       <button class="topbar-btn" title="Actualizar app" onclick="updateApp()">
         <svg class="icon icon-sm" viewBox="0 0 24 24">
           <polyline points="23 4 23 10 17 10"/>
@@ -641,7 +481,6 @@ body {
 
     <!-- ── SCREEN: HOME ─────────────────────────────── -->
     <div class="screen active" id="screenHome">
-
       <div class="home-hero">
         <div class="home-tag">Red local · WebRTC</div>
         <h1 class="home-title">Cámara en<br/><span>tiempo real</span></h1>
@@ -649,7 +488,6 @@ body {
       </div>
 
       <div class="mode-cards">
-
         <button class="mode-card" onclick="goTransmit()">
           <div class="mode-card-stripe"></div>
           <div class="mode-card-body">
@@ -681,14 +519,13 @@ body {
             </div>
             <div class="mode-card-info">
               <div class="mode-card-title">Ver</div>
-              <div class="mode-card-desc">Conectate a una transmisión activa usando el código de sala.</div>
+              <div class="mode-card-desc">Conectate a una transmisión activa y controlá la linterna.</div>
             </div>
             <div class="mode-card-arrow">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
           </div>
         </button>
-
       </div>
 
       <div class="spacer"></div>
@@ -701,20 +538,22 @@ body {
         <div class="install-text"><strong>Instalá la app</strong><br/>Acceso rápido desde la pantalla de inicio.</div>
         <button class="btn-install-sm" onclick="installPWA()">Instalar</button>
       </div>
-
     </div>
 
     <!-- ── SCREEN: TRANSMIT ──────────────────────── -->
     <div class="screen" id="screenTransmit">
 
+      <!-- Header con botón detener arriba -->
       <div class="screen-header">
-        <button class="btn-back" onclick="goHome()">
+        <button class="btn-back" id="btnStopTxTop" onclick="stopTransmitAndGoHome()" title="Detener y volver">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <div class="screen-title">Transmitir</div>
+        <div class="screen-title" id="txScreenTitle">Transmitir</div>
+        <!-- Indicador de sala activa -->
+        <div id="txSalaBadge" style="display:none;font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.8);background:var(--v700);border-radius:6px;padding:3px 8px;">—</div>
       </div>
 
-      <!-- Aviso de visibilidad (transmisor) -->
+      <!-- Aviso visibilidad -->
       <div class="visibility-warning" id="txVisibilityWarn">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -723,6 +562,7 @@ body {
         <span>App en segundo plano — la transmisión puede interrumpirse. Mantené la pantalla activa.</span>
       </div>
 
+      <!-- Video -->
       <div class="video-wrapper">
         <div class="video-container" id="txVideoContainer">
           <video id="localVideo" autoplay muted playsinline></video>
@@ -732,10 +572,8 @@ body {
             </svg>
             <span class="ov-text">Sin cámara activa</span>
           </div>
-          <!-- Botones flotantes sobre el video -->
           <div class="video-btns">
-            <button class="btn-video-action" id="btnFlipCam" title="Cambiar cámara"
-                    onclick="flipCamera()">
+            <button class="btn-video-action" id="btnFlipCam" title="Cambiar cámara" onclick="flipCamera()">
               <svg class="icon icon-sm" viewBox="0 0 24 24">
                 <path d="M20 7h-3.5l-1.5-2H9L7.5 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
                 <path d="M12 10v4M10 12l2 2 2-2"/>
@@ -752,25 +590,46 @@ body {
         </div>
       </div>
 
+      <!-- Status -->
       <div id="txStatus" class="status-badge status-idle">
         <div class="dot"></div>
         <span id="txStatusText">Inactivo</span>
       </div>
 
-      <div class="sala-display" id="salaDisplay" style="display:none">
-        <div class="sala-label">Código de sala</div>
-        <div class="sala-code" id="salaCode">—</div>
-        <div class="sala-hint">Compartí este código con el otro dispositivo</div>
-        <div class="sala-row">
-          <button class="btn-qr" onclick="showQR()">
-            <svg class="icon icon-sm" viewBox="0 0 24 24">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
-              <path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z"/>
-            </svg>
-            Ver QR
-          </button>
+      <!-- GADGET: reloj + clima (solo cuando transmite) -->
+      <div class="tx-gadget" id="txGadget">
+        <div class="gadget-clock">
+          <span id="gadgetHH">--</span>:<span id="gadgetMM">--</span><span class="clock-secs">:<span id="gadgetSS">--</span></span>
         </div>
+        <div class="gadget-weather-loading" id="gadgetWeatherLoading">Obteniendo clima…</div>
+        <div class="gadget-weather" id="gadgetWeather" style="display:none">
+          <svg class="icon icon-lg" id="gadgetWeatherIcon" viewBox="0 0 24 24" style="color:rgba(255,255,255,.6)">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <div class="gadget-temp" id="gadgetTemp">--°</div>
+          <div class="gadget-desc" id="gadgetDesc">—</div>
+        </div>
+      </div>
+
+      <!-- Selector de sala (antes de iniciar) -->
+      <div class="sala-select-wrap" id="txSalaSelectWrap">
+        <label class="sala-select-label" for="txSalaSelect">Seleccioná la sala</label>
+        <div class="sala-select-loading" id="txSalasLoading">Cargando salas…</div>
+        <select class="sala-select" id="txSalaSelect" style="display:none"></select>
+        <div class="sala-select-empty" id="txSalasEmpty" style="display:none">No hay salas configuradas en el Sheet.</div>
+      </div>
+
+      <!-- Sala activa display -->
+      <div class="sala-display" id="salaDisplay" style="display:none">
+        <div class="sala-label">Sala activa</div>
+        <div class="sala-code" id="salaCode">—</div>
+        <div class="sala-hint" id="salaNombre">—</div>
       </div>
 
       <button class="btn btn-primary" id="btnStartTx" onclick="startTransmit()">
@@ -781,7 +640,7 @@ body {
       </button>
       <button class="btn btn-danger" id="btnStopTx" onclick="stopTransmit()" style="display:none">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-        Detener
+        Detener transmisión
       </button>
 
     </div>
@@ -818,7 +677,7 @@ body {
         </div>
       </div>
 
-      <!-- Aviso de transmisión pausada (visor) -->
+      <!-- Aviso pausa visor -->
       <div class="visibility-warning" id="rxPausedWarn">
         <svg class="icon" viewBox="0 0 24 24">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -832,10 +691,23 @@ body {
         <span id="rxStatusText">Inactivo</span>
       </div>
 
-      <div class="input-group" id="salaInputGroup">
-        <label class="input-label" for="salaInput">Código de sala</label>
-        <input class="input-field" id="salaInput" type="text" maxlength="4"
-               placeholder="0000" oninput="this.value=this.value.toUpperCase()" />
+      <!-- Linterna -->
+      <div class="torch-wrap" id="torchWrap">
+        <button class="btn-torch" id="btnTorch" onclick="toggleTorch()" disabled>
+          <svg class="icon icon-sm" viewBox="0 0 24 24">
+            <path d="M8 2h8l1 6-2 2v8a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-8L7 8l1-6z"/>
+            <line x1="12" y1="10" x2="12" y2="14"/>
+          </svg>
+          <span id="torchLabel">Encender linterna</span>
+        </button>
+      </div>
+
+      <!-- Selector de sala activa -->
+      <div class="sala-select-wrap" id="rxSalaSelectWrap">
+        <label class="sala-select-label" for="rxSalaSelect">Sala activa</label>
+        <div class="sala-select-loading" id="rxSalasLoading">Cargando salas activas…</div>
+        <select class="sala-select" id="rxSalaSelect" style="display:none"></select>
+        <div class="sala-select-empty" id="rxSalasEmpty" style="display:none">Sin transmisiones activas en este momento.</div>
       </div>
 
       <button class="btn btn-primary" id="btnConnect" onclick="startView()">
@@ -877,7 +749,7 @@ body {
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:       'v3.0',
+  VERSION_UI:       'v4.0',
   GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
@@ -892,10 +764,58 @@ const CONFIG = {
 let pc            = null;
 let localStream   = null;
 let sala          = null;
+let salaNombre    = null;
 let pollTimer     = null;
 let deferInstall  = null;
 let currentToken  = null;
-let facingMode    = 'environment'; // cámara trasera por defecto
+let facingMode    = 'environment';
+let dataChannel   = null;      // RTCDataChannel (TX crea, RX recibe)
+let torchOn       = false;
+let torchSupported = false;
+let clockTimer    = null;
+let weatherLoaded = false;
+
+// ============================================================
+//  DETECCIÓN DE NAVEGADOR
+// ============================================================
+(function detectBrowser() {
+  const ua = navigator.userAgent;
+  const isSamsung  = /SamsungBrowser/i.test(ua);
+  const isFirefox  = /Firefox/i.test(ua);
+  const isChrome   = /Chrome/i.test(ua) && !/Edg|OPR/i.test(ua);
+  const isSafari   = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+  // Avisamos si NO es Chrome ni Firefox (los mejor soportados)
+  if (!isChrome && !isFirefox) {
+    document.getElementById('browserWarn').classList.add('show');
+  }
+})();
+
+// ============================================================
+//  MODO OSCURO
+// ============================================================
+function toggleDark() {
+  const dark = document.body.classList.toggle('dark');
+  localStorage.setItem('wcdms_dark', dark ? '1' : '0');
+  updateDarkIcon(dark);
+}
+function updateDarkIcon(dark) {
+  const icon = document.getElementById('iconDark');
+  if (dark) {
+    // Sol (salir del modo oscuro)
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    // Luna
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+// Inicializar preferencia guardada
+(function initDark() {
+  const saved = localStorage.getItem('wcdms_dark');
+  if (saved === '1') {
+    document.body.classList.add('dark');
+    updateDarkIcon(true);
+  }
+})();
 
 // ============================================================
 //  TOKEN AUTH
@@ -927,10 +847,133 @@ function showLock(showError) {
 }
 
 // ============================================================
+//  SALAS — carga desde GAS
+// ============================================================
+async function loadSalas(mode) {
+  // mode: 'tx' | 'rx'
+  const prefix     = mode;
+  const loadingEl  = document.getElementById(prefix + 'SalasLoading');
+  const selectEl   = document.getElementById(prefix + 'SalaSelect');
+  const emptyEl    = document.getElementById(prefix + 'SalasEmpty');
+
+  loadingEl.style.display = 'block';
+  selectEl.style.display  = 'none';
+  emptyEl.style.display   = 'none';
+
+  try {
+    const res = await gas({ action: 'getSalas' });
+    loadingEl.style.display = 'none';
+
+    if (!res.ok || !res.salas) throw new Error('Error cargando salas');
+
+    const lista = mode === 'rx'
+      ? res.salas.filter(s => s.activa)
+      : res.salas;
+
+    if (lista.length === 0) {
+      emptyEl.style.display = 'block';
+      if (mode === 'tx') document.getElementById('btnStartTx').disabled = true;
+      if (mode === 'rx') document.getElementById('btnConnect').disabled  = true;
+      return;
+    }
+
+    selectEl.innerHTML = '';
+    lista.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value       = s.codigo;
+      opt.textContent = s.nombre + ' [' + s.codigo + ']';
+      selectEl.appendChild(opt);
+    });
+    selectEl.style.display = 'block';
+    if (mode === 'tx') document.getElementById('btnStartTx').disabled = false;
+    if (mode === 'rx') document.getElementById('btnConnect').disabled  = false;
+
+  } catch (err) {
+    loadingEl.textContent   = 'Error cargando salas. Reintentá.';
+    loadingEl.style.display = 'block';
+  }
+}
+
+// ============================================================
+//  RELOJ — segundero digital
+// ============================================================
+function startClock() {
+  stopClock();
+  function tick() {
+    const now = new Date();
+    const hh  = String(now.getHours()).padStart(2, '0');
+    const mm  = String(now.getMinutes()).padStart(2, '0');
+    const ss  = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('gadgetHH').textContent = hh;
+    document.getElementById('gadgetMM').textContent = mm;
+    document.getElementById('gadgetSS').textContent = ss;
+  }
+  tick();
+  clockTimer = setInterval(tick, 1000);
+}
+function stopClock() {
+  if (clockTimer) { clearInterval(clockTimer); clockTimer = null; }
+}
+
+// ============================================================
+//  CLIMA — Open-Meteo con geolocalización GPS
+// ============================================================
+const WMO_DESC = {
+  0:'Despejado', 1:'Mayormente despejado', 2:'Parcialmente nublado', 3:'Nublado',
+  45:'Neblina', 48:'Neblina con escarcha',
+  51:'Llovizna leve', 53:'Llovizna', 55:'Llovizna intensa',
+  61:'Lluvia leve', 63:'Lluvia', 65:'Lluvia intensa',
+  71:'Nevada leve', 73:'Nevada', 75:'Nevada intensa',
+  80:'Chaparrones', 81:'Chaparrones fuertes', 82:'Chaparrones violentos',
+  95:'Tormenta', 96:'Tormenta con granizo', 99:'Tormenta severa'
+};
+
+async function fetchWeather() {
+  if (weatherLoaded) return;
+
+  // 1. Intentar geolocalización
+  let lat, lon;
+  try {
+    const pos = await new Promise((res, rej) =>
+      navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000 })
+    );
+    lat = pos.coords.latitude.toFixed(4);
+    lon = pos.coords.longitude.toFixed(4);
+  } catch (e) {
+    // Sin permiso o timeout — mostrar "--" sin romper
+    document.getElementById('gadgetWeatherLoading').style.display = 'none';
+    const w = document.getElementById('gadgetWeather');
+    w.style.display = 'flex';
+    document.getElementById('gadgetTemp').textContent = '--°';
+    document.getElementById('gadgetDesc').textContent  = 'Ubicación no disponible';
+    return;
+  }
+
+  // 2. Consultar Open-Meteo
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=celsius&timezone=auto`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    const cw   = data.current_weather;
+
+    const temp = Math.round(cw.temperature);
+    const desc = WMO_DESC[cw.weathercode] || 'Condición ' + cw.weathercode;
+
+    document.getElementById('gadgetWeatherLoading').style.display = 'none';
+    document.getElementById('gadgetTemp').textContent = temp + '°';
+    document.getElementById('gadgetDesc').textContent = desc;
+    document.getElementById('gadgetWeather').style.display = 'flex';
+    weatherLoaded = true;
+  } catch (e) {
+    document.getElementById('gadgetWeatherLoading').textContent = 'Sin datos de clima';
+  }
+}
+
+// ============================================================
 //  FULLSCREEN
 // ============================================================
 function toggleFullscreen(containerId, btnId) {
-  const el = document.getElementById(containerId);
+  const el   = document.getElementById(containerId);
   const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
   if (!isFs) {
     const req = el.requestFullscreen || el.webkitRequestFullscreen;
@@ -940,13 +983,10 @@ function toggleFullscreen(containerId, btnId) {
     if (exit) exit.call(document);
   }
 }
-
 document.addEventListener('fullscreenchange',       onFsChange);
 document.addEventListener('webkitfullscreenchange', onFsChange);
-
 function onFsChange() {
   const inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  // Swap icon: expand ↔ compress
   ['Tx','Rx'].forEach(side => {
     const iconEl = document.getElementById('iconFs' + side);
     if (!iconEl) return;
@@ -959,62 +999,111 @@ function onFsChange() {
 }
 
 // ============================================================
-//  FLIP CAMERA (frontal / trasera)
+//  FLIP CAMERA
 // ============================================================
 async function flipCamera() {
   if (!localStream) return;
   facingMode = (facingMode === 'environment') ? 'user' : 'environment';
-
-  // Detener tracks actuales
   localStream.getTracks().forEach(t => t.stop());
-
   try {
     const newStream = await navigator.mediaDevices.getUserMedia({
       video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode },
       audio: false
     });
-
-    // Reemplazar track en PeerConnection si existe
     const newTrack = newStream.getVideoTracks()[0];
     if (pc) {
       const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
       if (sender) await sender.replaceTrack(newTrack);
     }
-
     localStream = newStream;
     document.getElementById('localVideo').srcObject = newStream;
+    // Redetectar soporte de linterna al cambiar cámara
+    checkTorchSupport(newTrack);
     toast(facingMode === 'user' ? 'Cámara frontal' : 'Cámara trasera');
   } catch (err) {
     toast('No se pudo cambiar de cámara', 'error');
-    // Revertir
     facingMode = (facingMode === 'environment') ? 'user' : 'environment';
   }
 }
 
 // ============================================================
-//  VISIBILITY CHANGE — detección de background
+//  LINTERNA — TX aplica torch, RX envía comando por DataChannel
+// ============================================================
+function checkTorchSupport(track) {
+  try {
+    const caps = track.getCapabilities();
+    torchSupported = !!(caps && caps.torch);
+  } catch(e) {
+    torchSupported = false;
+  }
+}
+
+function applyTorch(value) {
+  if (!localStream) return;
+  const track = localStream.getVideoTracks()[0];
+  if (!track) return;
+  try {
+    track.applyConstraints({ advanced: [{ torch: value }] })
+      .catch(() => {});
+  } catch(e) {}
+}
+
+// TX: escucha mensajes del DataChannel
+function setupTxDataChannel(channel) {
+  dataChannel = channel;
+  channel.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.cmd === 'torch') {
+        applyTorch(msg.value);
+        torchOn = msg.value;
+      }
+    } catch(err) {}
+  };
+  channel.onopen  = () => {};
+  channel.onclose = () => {};
+}
+
+// RX: toggle linterna → envía por DataChannel
+function toggleTorch() {
+  if (!dataChannel || dataChannel.readyState !== 'open') {
+    toast('Canal de datos no disponible', 'error');
+    return;
+  }
+  torchOn = !torchOn;
+  dataChannel.send(JSON.stringify({ cmd: 'torch', value: torchOn }));
+
+  const btn = document.getElementById('btnTorch');
+  const lbl = document.getElementById('torchLabel');
+  btn.classList.toggle('on', torchOn);
+  lbl.textContent = torchOn ? 'Apagar linterna' : 'Encender linterna';
+  toast(torchOn ? 'Linterna encendida' : 'Linterna apagada');
+}
+
+function resetTorchUI() {
+  torchOn = false;
+  const btn = document.getElementById('btnTorch');
+  const lbl = document.getElementById('torchLabel');
+  if (btn) { btn.classList.remove('on'); btn.disabled = true; }
+  if (lbl) lbl.textContent = 'Encender linterna';
+}
+
+// ============================================================
+//  VISIBILITY CHANGE
 // ============================================================
 document.addEventListener('visibilitychange', () => {
   const hidden = document.hidden;
-
-  // Si el transmisor minimiza → mostrar advertencia local
   if (localStream) {
     document.getElementById('txVisibilityWarn').classList.toggle('show', hidden);
   }
-
-  // Si el visor detecta que la app vuelve al frente → verificar estado
   if (!hidden && pc && pc.connectionState === 'connected') {
     document.getElementById('rxPausedWarn').classList.remove('show');
   }
-
-  // Si hay visor conectado y el transmisor avisa vía señalización
-  // (aproximación: si la conexión estaba bien y ahora el visor vuelve, avisa)
   if (!hidden && pc && pc.connectionState === 'disconnected') {
     document.getElementById('rxPausedWarn').classList.add('show');
   }
 });
 
-// Aviso en el visor si la conexión se pierde (transmisor minimizó)
 function onRxConnectionChange(state) {
   if (state === 'disconnected' || state === 'failed') {
     document.getElementById('rxPausedWarn').classList.add('show');
@@ -1032,22 +1121,26 @@ function showQR() {
   document.getElementById('qrUrl').textContent = url;
   const box = document.getElementById('qrCodeBox');
   box.innerHTML = '';
-  new QRCode(box, {
-    text: url, width: 200, height: 200,
-    colorDark: '#2e1065', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
+  new QRCode(box, { text: url, width: 200, height: 200, colorDark: '#2e1065', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   document.getElementById('qrModal').classList.add('open');
 }
-function closeQR(e) { if (e.target === document.getElementById('qrModal')) closeQRBtn(); }
+function closeQR(e)  { if (e.target === document.getElementById('qrModal')) closeQRBtn(); }
 function closeQRBtn() { document.getElementById('qrModal').classList.remove('open'); }
 
 function checkAutoConnect() {
-  const params = new URLSearchParams(window.location.search);
+  const params    = new URLSearchParams(window.location.search);
   const salaParam = params.get('sala');
-  if (salaParam && salaParam.length === 4) {
+  if (salaParam) {
     goView();
-    document.getElementById('salaInput').value = salaParam.toUpperCase();
+    // Pre-seleccionar sala si coincide
+    setTimeout(() => {
+      const sel = document.getElementById('rxSalaSelect');
+      if (sel) {
+        for (const opt of sel.options) {
+          if (opt.value === salaParam.toUpperCase()) { sel.value = opt.value; break; }
+        }
+      }
+    }, 1500);
     toast('Sala precargada: ' + salaParam.toUpperCase());
   }
 }
@@ -1060,7 +1153,6 @@ window.addEventListener('beforeinstallprompt', e => {
   deferInstall = e;
   document.getElementById('installBanner').classList.add('show');
 });
-
 function installPWA() {
   if (!deferInstall) return;
   deferInstall.prompt();
@@ -1069,7 +1161,6 @@ function installPWA() {
     deferInstall = null;
   });
 }
-
 function updateApp() {
   toast('Actualizando…');
   if ('serviceWorker' in navigator) {
@@ -1079,20 +1170,30 @@ function updateApp() {
     });
   } else location.reload();
 }
-
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw_v2.js').catch(err =>
-    console.warn('SW no registrado:', err)
-  );
+  navigator.serviceWorker.register('./sw_v2.js').catch(err => console.warn('SW no registrado:', err));
 }
 
 // ============================================================
 //  NAVEGACIÓN
 // ============================================================
-function goHome()     { stopTransmit(); stopView(); showScreen('screenHome'); }
-function goTransmit() { showScreen('screenTransmit'); }
-function goView()     { showScreen('screenView'); }
-
+function goHome() {
+  stopTransmit();
+  stopView();
+  showScreen('screenHome');
+}
+function goTransmit() {
+  showScreen('screenTransmit');
+  loadSalas('tx');
+}
+function goView() {
+  showScreen('screenView');
+  loadSalas('rx');
+}
+function stopTransmitAndGoHome() {
+  stopTransmit();
+  showScreen('screenHome');
+}
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1104,7 +1205,7 @@ function showScreen(id) {
 function toast(msg, type = '') {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
-  t.className = 'toast ' + type;
+  t.className   = 'toast ' + type;
   t.textContent = msg;
   c.appendChild(t);
   setTimeout(() => t.remove(), 3200);
@@ -1120,16 +1221,6 @@ async function gas(params) {
 }
 
 // ============================================================
-//  SALA generator
-// ============================================================
-function genSala() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let s = '';
-  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return s;
-}
-
-// ============================================================
 //  STATUS helpers
 // ============================================================
 function setTxStatus(state, label) {
@@ -1140,7 +1231,6 @@ function setTxStatus(state, label) {
   document.getElementById('btnFsTx').classList.toggle('visible', show);
   document.getElementById('btnFlipCam').classList.toggle('visible', show || state === 'waiting');
 }
-
 function setRxStatus(state, label) {
   const el = document.getElementById('rxStatus');
   el.className = 'status-badge status-' + state;
@@ -1152,6 +1242,16 @@ function setRxStatus(state, label) {
 //  TRANSMIT MODE
 // ============================================================
 async function startTransmit() {
+  const selectEl = document.getElementById('txSalaSelect');
+  if (!selectEl || !selectEl.value) {
+    toast('Seleccioná una sala primero', 'error');
+    return;
+  }
+
+  // Obtener sala seleccionada
+  sala       = selectEl.value;
+  salaNombre = selectEl.options[selectEl.selectedIndex].text;
+
   const btn = document.getElementById('btnStartTx');
   btn.disabled = true;
   btn.innerHTML = '<div class="btn-spinner"></div>';
@@ -1165,19 +1265,38 @@ async function startTransmit() {
     document.getElementById('localVideo').srcObject = localStream;
     document.getElementById('localOverlay').style.display = 'none';
 
-    sala = genSala();
-    document.getElementById('salaCode').textContent = sala;
+    // Mostrar sala activa
+    document.getElementById('salaCode').textContent      = sala;
+    document.getElementById('salaNombre').textContent    = salaNombre;
     document.getElementById('salaDisplay').style.display = 'block';
+    document.getElementById('txSalaSelectWrap').style.display = 'none';
 
+    // Badge en header
+    const badge = document.getElementById('txSalaBadge');
+    badge.textContent     = sala;
+    badge.style.display   = 'inline-block';
+    document.getElementById('txScreenTitle').textContent = 'Transmitiendo';
+
+    // Chequear soporte de linterna
+    const vtrack = localStream.getVideoTracks()[0];
+    if (vtrack) checkTorchSupport(vtrack);
+
+    // Marcar sala como activa en el Sheet
+    await gas({ action: 'setSalaActiva', codigo: sala, activa: 'true' });
     await gas({ action: 'clearSession', sala });
 
+    // WebRTC
     pc = new RTCPeerConnection({ iceServers: CONFIG.ICE_SERVERS });
+
+    // DataChannel para linterna
+    const dc = pc.createDataChannel('control');
+    setupTxDataChannel(dc);
+
     localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
 
     pc.onicecandidate = async e => {
       if (e.candidate) {
-        await gas({ action: 'addCandidate', sala,
-                    datos: JSON.stringify(e.candidate.toJSON()), rol: 'caller' });
+        await gas({ action: 'addCandidate', sala, datos: JSON.stringify(e.candidate.toJSON()), rol: 'caller' });
       }
     };
 
@@ -1200,11 +1319,14 @@ async function startTransmit() {
     setTxStatus('waiting', 'Esperando visor…');
     btn.style.display = 'none';
     document.getElementById('btnStopTx').style.display = 'flex';
-
-    // Mostrar botón flip mientras espera o está conectado
     document.getElementById('btnFlipCam').classList.add('visible');
 
-    toast('Sala ' + sala + ' activa. Compartí el código.');
+    // Gadget reloj + clima
+    document.getElementById('txGadget').classList.add('show');
+    startClock();
+    fetchWeather();
+
+    toast('Sala ' + sala + ' activa.');
 
     startPolling(async () => {
       const res = await gas({ action: 'getAnswer', sala });
@@ -1219,7 +1341,7 @@ async function startTransmit() {
   } catch (err) {
     toast('Error: ' + err.message, 'error');
     setTxStatus('error', 'Error');
-    btn.disabled = false;
+    btn.disabled  = false;
     btn.innerHTML = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg> Iniciar transmisión`;
   }
 }
@@ -1235,18 +1357,45 @@ async function fetchRemoteCandidates(rol) {
 
 function stopTransmit() {
   stopPolling();
-  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-  if (pc)          { pc.close(); pc = null; }
-  if (sala)        { gas({ action: 'clearSession', sala }).catch(() => {}); sala = null; }
+  stopClock();
 
-  facingMode = 'environment'; // reset
+  if (localStream) {
+    // Apagar linterna antes de cerrar
+    applyTorch(false);
+    localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+  }
+  if (pc)   { pc.close(); pc = null; }
+  if (sala) {
+    gas({ action: 'setSalaActiva', codigo: sala, activa: 'false' }).catch(() => {});
+    gas({ action: 'clearSession', sala }).catch(() => {});
+    sala = null;
+  }
+  dataChannel   = null;
+  torchOn       = false;
+  facingMode    = 'environment';
+  weatherLoaded = false;
 
-  document.getElementById('localVideo').srcObject = null;
-  document.getElementById('localOverlay').style.display = 'flex';
-  document.getElementById('salaDisplay').style.display  = 'none';
+  document.getElementById('localVideo').srcObject   = null;
+  document.getElementById('localOverlay').style.display  = 'flex';
+  document.getElementById('salaDisplay').style.display   = 'none';
+  document.getElementById('txSalaSelectWrap').style.display = 'block';
+  document.getElementById('txGadget').classList.remove('show');
   document.getElementById('btnFsTx').classList.remove('visible');
   document.getElementById('btnFlipCam').classList.remove('visible');
   document.getElementById('txVisibilityWarn').classList.remove('show');
+
+  // Reset gadget
+  document.getElementById('gadgetHH').textContent = '--';
+  document.getElementById('gadgetMM').textContent = '--';
+  document.getElementById('gadgetSS').textContent = '--';
+  document.getElementById('gadgetWeather').style.display        = 'none';
+  document.getElementById('gadgetWeatherLoading').style.display = 'block';
+  document.getElementById('gadgetWeatherLoading').textContent   = 'Obteniendo clima…';
+
+  // Reset header
+  document.getElementById('txSalaBadge').style.display   = 'none';
+  document.getElementById('txScreenTitle').textContent   = 'Transmitir';
 
   const btnStart = document.getElementById('btnStartTx');
   btnStart.style.display = 'flex';
@@ -1261,20 +1410,24 @@ function stopTransmit() {
 //  VIEW MODE
 // ============================================================
 async function startView() {
-  const input = document.getElementById('salaInput').value.trim().toUpperCase();
-  if (input.length < 4) { toast('Ingresá el código de sala (4 caracteres)', 'error'); return; }
+  const selectEl = document.getElementById('rxSalaSelect');
+  if (!selectEl || !selectEl.value) {
+    toast('No hay transmisiones activas', 'error');
+    return;
+  }
 
-  sala = input;
+  sala = selectEl.value;
+
   const btn = document.getElementById('btnConnect');
-  btn.disabled = true;
+  btn.disabled  = true;
   btn.innerHTML = '<div class="btn-spinner"></div>';
-  document.getElementById('salaInputGroup').style.display = 'none';
+  document.getElementById('rxSalaSelectWrap').style.display = 'none';
   setRxStatus('waiting', 'Buscando sala…');
 
   let offerRes;
   try {
     offerRes = await gas({ action: 'getOffer', sala });
-    if (!offerRes.ok) throw new Error('Sala no encontrada');
+    if (!offerRes.ok) throw new Error('Sala no encontrada o sin oferta activa');
   } catch (err) {
     toast('No se encontró la sala. ¿Está activa?', 'error');
     setRxStatus('error', 'Sala no encontrada');
@@ -1283,6 +1436,20 @@ async function startView() {
   }
 
   pc = new RTCPeerConnection({ iceServers: CONFIG.ICE_SERVERS });
+
+  // DataChannel desde TX
+  pc.ondatachannel = (e) => {
+    dataChannel = e.channel;
+    dataChannel.onopen = () => {
+      // Habilitar botón de linterna
+      const btn = document.getElementById('btnTorch');
+      if (btn) btn.disabled = false;
+    };
+    dataChannel.onclose = () => {
+      const btn = document.getElementById('btnTorch');
+      if (btn) btn.disabled = true;
+    };
+  };
 
   pc.ontrack = e => {
     const vid = document.getElementById('remoteVideo');
@@ -1294,8 +1461,7 @@ async function startView() {
 
   pc.onicecandidate = async e => {
     if (e.candidate) {
-      await gas({ action: 'addCandidate', sala,
-                  datos: JSON.stringify(e.candidate.toJSON()), rol: 'callee' });
+      await gas({ action: 'addCandidate', sala, datos: JSON.stringify(e.candidate.toJSON()), rol: 'callee' });
     }
   };
 
@@ -1306,9 +1472,13 @@ async function startView() {
       setRxStatus('connected', 'Conectado');
       toast('¡Video en vivo!', 'success');
       stopPolling();
+      // Mostrar botón linterna
+      document.getElementById('torchWrap').classList.add('show');
     } else if (s === 'disconnected' || s === 'failed') {
       setRxStatus('error', 'Desconectado');
       toast('Se perdió la conexión.', 'error');
+      document.getElementById('torchWrap').classList.remove('show');
+      resetTorchUI();
     }
   };
 
@@ -1334,11 +1504,14 @@ async function startView() {
 function stopView() {
   stopPolling();
   if (pc) { pc.close(); pc = null; }
-  sala = null;
-  document.getElementById('remoteVideo').srcObject = null;
+  dataChannel = null;
+  sala        = null;
+  document.getElementById('remoteVideo').srcObject       = null;
   document.getElementById('remoteOverlay').style.display = 'flex';
   document.getElementById('btnFsRx').classList.remove('visible');
   document.getElementById('rxPausedWarn').classList.remove('show');
+  document.getElementById('torchWrap').classList.remove('show');
+  resetTorchUI();
   resetViewUI();
   setRxStatus('idle', 'Inactivo');
 }
@@ -1348,8 +1521,8 @@ function resetViewUI() {
   btn.style.display  = 'flex';
   btn.disabled       = false;
   btn.innerHTML      = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Conectar`;
-  document.getElementById('btnDisconnect').style.display  = 'none';
-  document.getElementById('salaInputGroup').style.display = 'block';
+  document.getElementById('btnDisconnect').style.display     = 'none';
+  document.getElementById('rxSalaSelectWrap').style.display  = 'block';
 }
 
 // ============================================================
