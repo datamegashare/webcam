@@ -830,7 +830,7 @@ body {
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:       'v4.1',
+  VERSION_UI:       'v4.4',
   GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
@@ -855,6 +855,7 @@ let torchOn       = false;
 let torchSupported = false;
 let clockTimer    = null;
 let weatherLoaded = false;
+let currentRole   = null;  // 'tx' | 'rx' | null — solo TX marca sala inactiva al salir
 
 // ============================================================
 //  DETECCIÓN DE NAVEGADOR
@@ -1382,8 +1383,9 @@ async function startTransmit() {
   }
 
   // Obtener sala seleccionada
-  sala       = selectEl.value;
-  salaNombre = selectEl.options[selectEl.selectedIndex].text;
+  sala        = selectEl.value;
+  salaNombre  = selectEl.options[selectEl.selectedIndex].text;
+  currentRole = 'tx';
 
   const btn = document.getElementById('btnStartTx');
   btn.disabled = true;
@@ -1498,11 +1500,12 @@ function stopTransmit() {
     localStream = null;
   }
   if (pc)   { pc.close(); pc = null; }
-  if (sala) {
+  if (sala && currentRole === 'tx') {
     gas({ action: 'setSalaActiva', codigo: sala, activa: 'false' }).catch(() => {});
     gas({ action: 'clearSession', sala }).catch(() => {});
-    sala = null;
   }
+  sala        = null;
+  currentRole = null;
   dataChannel   = null;
   torchOn       = false;
   facingMode    = 'environment';
@@ -1547,7 +1550,8 @@ async function startView() {
     return;
   }
 
-  sala = selectEl.value;
+  sala        = selectEl.value;
+  currentRole = 'rx';
 
   const btn = document.getElementById('btnConnect');
   btn.disabled  = true;
