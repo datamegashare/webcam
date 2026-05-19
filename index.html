@@ -450,6 +450,9 @@ body {
 .toast.success { background: #065f46; color: white; }
 .toast.error   { background: #991b1b; color: white; }
 @keyframes toast-in { from { opacity:0; transform:translateY(12px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+.topbar-btn-install { border-color: rgba(251,191,36,.50); color: #fbbf24; }
+.topbar-btn-install:hover { background: rgba(251,191,36,.15); }
+
 </style>
 </head>
 <body>
@@ -873,7 +876,11 @@ function updateDarkIcon(dark) {
 // ============================================================
 async function initAuth() {
   const params = new URLSearchParams(window.location.search);
-  const token  = params.get('token');
+  let token    = params.get('token');
+
+  // Si no viene en la URL, recuperar del localStorage (modo standalone / ícono)
+  if (!token) token = localStorage.getItem('wcdms_token');
+
   if (!token) {
     document.getElementById('loadingOverlay').classList.add('hidden');
     showLock(false);
@@ -884,11 +891,13 @@ async function initAuth() {
     document.getElementById('loadingOverlay').classList.add('hidden');
     if (res.ok) {
       currentToken = token;
+      localStorage.setItem('wcdms_token', token); // persistir para próximas aperturas
       document.getElementById('lockScreen').classList.remove('visible');
       const ac = document.getElementById('appContainer');
       ac.style.display       = 'flex';
       ac.style.flexDirection = 'column';
     } else {
+      localStorage.removeItem('wcdms_token'); // token inválido → limpiar
       showLock(true);
     }
   } catch (e) {
@@ -1716,7 +1725,4 @@ initAuth().then(() => {
 </script>
 
 </body>
-</html>.topbar-btn-install { border-color: rgba(251,191,36,.50); color: #fbbf24; }
-.topbar-btn-install:hover { background: rgba(251,191,36,.15); }
-
-
+</html>
