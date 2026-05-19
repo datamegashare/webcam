@@ -100,6 +100,29 @@ body {
 }
 #browserWarn.show { display: flex; }
 
+/* ── LOADING OVERLAY ─────────────────────────────────────── */
+#loadingOverlay {
+  position: fixed; inset: 0;
+  background: var(--v950);
+  z-index: 9998;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px;
+}
+#loadingOverlay.hidden { display: none; }
+.loading-spinner {
+  width: 44px; height: 44px;
+  border: 3px solid rgba(255,255,255,.15);
+  border-top-color: rgba(167,139,250,.9);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+.loading-label {
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .04em;
+}
+
 /* ── LOCK SCREEN ─────────────────────────────────────────── */
 #lockScreen {
   display: none;
@@ -273,15 +296,15 @@ body {
 
 .gadget-clock {
   font-family: var(--font-mono);
-  font-size: 44px;
+  font-size: 60px;
   font-weight: 500;
   color: #fff;
-  letter-spacing: .06em;
+  letter-spacing: .04em;
   line-height: 1;
   text-align: center;
 }
 .gadget-clock .clock-secs {
-  font-size: 28px;
+  font-size: 36px;
   color: rgba(255,255,255,.45);
 }
 
@@ -351,10 +374,26 @@ body {
 .sala-select-empty   { font-size: 12px; color: var(--red); padding: 6px 2px; }
 
 /* ── SALA DISPLAY (TX activo) ────────────────────────────── */
-.sala-display { background: var(--v50); border: 1px dashed var(--v200); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 14px; }
-.sala-label   { font-size: 10px; font-weight: 600; letter-spacing: .10em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+.sala-display {
+  background: var(--v50); border: 1px dashed var(--v200);
+  border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sala-display-info { flex: 1; min-width: 0; }
+.sala-label   { font-size: 10px; font-weight: 600; letter-spacing: .10em; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
 .sala-code    { font-family: var(--font-mono); font-size: 22px; font-weight: 500; letter-spacing: .12em; color: var(--v800); }
-.sala-hint    { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.sala-hint    { font-size: 11px; color: var(--text3); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn-stop-inline {
+  flex-shrink: 0;
+  height: 46px; padding: 0 14px;
+  background: #fef2f2; color: var(--red);
+  border: 1px solid #fecaca; border-radius: var(--r-md);
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  transition: background .18s;
+  white-space: nowrap;
+}
+.btn-stop-inline:active { background: #fee2e2; }
 
 /* ── TORCH BUTTON (visor) ────────────────────────────────── */
 .torch-wrap { display: none; margin-bottom: 12px; }
@@ -421,6 +460,12 @@ body {
 </style>
 </head>
 <body>
+
+<!-- ── LOADING OVERLAY ───────────────────────────────────── -->
+<div id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-label">Verificando acceso…</div>
+</div>
 
 <!-- ── LOCK SCREEN ──────────────────────────────────────── -->
 <div id="lockScreen">
@@ -627,9 +672,15 @@ body {
 
       <!-- Sala activa display -->
       <div class="sala-display" id="salaDisplay" style="display:none">
-        <div class="sala-label">Sala activa</div>
-        <div class="sala-code" id="salaCode">—</div>
-        <div class="sala-hint" id="salaNombre">—</div>
+        <div class="sala-display-info">
+          <div class="sala-label">Sala activa</div>
+          <div class="sala-code" id="salaCode">—</div>
+          <div class="sala-hint" id="salaNombre">—</div>
+        </div>
+        <button class="btn-stop-inline" onclick="stopTransmit()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Detener
+        </button>
       </div>
 
       <button class="btn btn-primary" id="btnStartTx" onclick="startTransmit()">
@@ -638,10 +689,7 @@ body {
         </svg>
         Iniciar transmisión
       </button>
-      <button class="btn btn-danger" id="btnStopTx" onclick="stopTransmit()" style="display:none">
-        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-        Detener transmisión
-      </button>
+      <!-- btn-danger eliminado: detener está integrado en la tarjeta de sala -->
 
     </div>
 
@@ -749,7 +797,7 @@ body {
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:       'v4.0',
+  VERSION_UI:       'v4.1',
   GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
@@ -823,9 +871,14 @@ function updateDarkIcon(dark) {
 async function initAuth() {
   const params = new URLSearchParams(window.location.search);
   const token  = params.get('token');
-  if (!token) { showLock(false); return; }
+  if (!token) {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    showLock(false);
+    return;
+  }
   try {
     const res = await gas({ action: 'validateToken', token });
+    document.getElementById('loadingOverlay').classList.add('hidden');
     if (res.ok) {
       currentToken = token;
       document.getElementById('lockScreen').classList.remove('visible');
@@ -836,6 +889,7 @@ async function initAuth() {
       showLock(true);
     }
   } catch (e) {
+    document.getElementById('loadingOverlay').classList.add('hidden');
     showLock(true);
   }
 }
@@ -1019,6 +1073,8 @@ async function flipCamera() {
     document.getElementById('localVideo').srcObject = newStream;
     // Redetectar soporte de linterna al cambiar cámara
     checkTorchSupport(newTrack);
+    // Notificar al visor el nuevo facingMode
+    sendFacingMode();
     toast(facingMode === 'user' ? 'Cámara frontal' : 'Cámara trasera');
   } catch (err) {
     toast('No se pudo cambiar de cámara', 'error');
@@ -1060,8 +1116,17 @@ function setupTxDataChannel(channel) {
       }
     } catch(err) {}
   };
-  channel.onopen  = () => {};
+  channel.onopen  = () => {
+    // Al abrir el canal, notificar al visor el facingMode actual
+    sendFacingMode();
+  };
   channel.onclose = () => {};
+}
+
+function sendFacingMode() {
+  if (dataChannel && dataChannel.readyState === 'open') {
+    try { dataChannel.send(JSON.stringify({ cmd: 'facingMode', value: facingMode })); } catch(e) {}
+  }
 }
 
 // RX: toggle linterna → envía por DataChannel
@@ -1078,6 +1143,27 @@ function toggleTorch() {
   btn.classList.toggle('on', torchOn);
   lbl.textContent = torchOn ? 'Apagar linterna' : 'Encender linterna';
   toast(torchOn ? 'Linterna encendida' : 'Linterna apagada');
+}
+
+function updateTorchBtn(dcOpen, facing) {
+  const btn = document.getElementById('btnTorch');
+  const lbl = document.getElementById('torchLabel');
+  if (!btn) return;
+  const isFront = (facing === 'user');
+  btn.disabled = !dcOpen || isFront;
+  if (isFront) {
+    lbl.textContent = 'Linterna no disponible (cámara frontal)';
+    btn.classList.remove('on');
+    if (dcOpen && torchOn) {
+      // Apagar linterna si estaba encendida y cambiaron a frontal
+      torchOn = false;
+      if (dataChannel && dataChannel.readyState === 'open') {
+        dataChannel.send(JSON.stringify({ cmd: 'torch', value: false }));
+      }
+    }
+  } else {
+    lbl.textContent = torchOn ? 'Apagar linterna' : 'Encender linterna';
+  }
 }
 
 function resetTorchUI() {
@@ -1318,7 +1404,6 @@ async function startTransmit() {
 
     setTxStatus('waiting', 'Esperando visor…');
     btn.style.display = 'none';
-    document.getElementById('btnStopTx').style.display = 'flex';
     document.getElementById('btnFlipCam').classList.add('visible');
 
     // Gadget reloj + clima
@@ -1401,7 +1486,6 @@ function stopTransmit() {
   btnStart.style.display = 'flex';
   btnStart.disabled      = false;
   btnStart.innerHTML     = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg> Iniciar transmisión`;
-  document.getElementById('btnStopTx').style.display = 'none';
 
   setTxStatus('idle', 'Inactivo');
 }
@@ -1441,13 +1525,20 @@ async function startView() {
   pc.ondatachannel = (e) => {
     dataChannel = e.channel;
     dataChannel.onopen = () => {
-      // Habilitar botón de linterna
-      const btn = document.getElementById('btnTorch');
-      if (btn) btn.disabled = false;
+      // Habilitar botón de linterna (se ajusta cuando llega facingMode)
+      updateTorchBtn(true, 'environment');
     };
     dataChannel.onclose = () => {
       const btn = document.getElementById('btnTorch');
       if (btn) btn.disabled = true;
+    };
+    dataChannel.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.cmd === 'facingMode') {
+          updateTorchBtn(true, msg.value);
+        }
+      } catch(e) {}
     };
   };
 
