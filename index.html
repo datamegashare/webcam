@@ -830,7 +830,7 @@ body {
 //  CONFIG
 // ============================================================
 const CONFIG = {
-  VERSION_UI:       'v4.4',
+  VERSION_UI:       'v4.5',
   GAS_URL:          'https://script.google.com/macros/s/AKfycbyyidxEE23Ufdqrrj5OeuivCCCWGzjthfUIyFcL4fzkCGAMMumrdvXOZGIRWltsRQguAA/exec',
   POLL_INTERVAL_MS: 1500,
   ICE_SERVERS: [
@@ -1213,8 +1213,12 @@ function resetTorchUI() {
 // ============================================================
 document.addEventListener('visibilitychange', () => {
   const hidden = document.hidden;
-  if (localStream) {
-    document.getElementById('txVisibilityWarn').classList.toggle('show', hidden);
+  // Warning TX: solo si hay stream Y la conexión estaba establecida al ir a background
+  if (localStream && hidden && pc && pc.connectionState === 'connected') {
+    document.getElementById('txVisibilityWarn').classList.add('show');
+  }
+  if (!hidden) {
+    document.getElementById('txVisibilityWarn').classList.remove('show');
   }
   if (!hidden && pc && pc.connectionState === 'connected') {
     document.getElementById('rxPausedWarn').classList.remove('show');
@@ -1442,8 +1446,9 @@ async function startTransmit() {
         toast('¡Conexión establecida!', 'success');
         stopPolling();
       } else if (s === 'disconnected' || s === 'failed') {
-        setTxStatus('error', 'Desconectado');
-        toast('Se perdió la conexión.', 'error');
+        setTxStatus('waiting', 'Esperando visor\u2026');
+        toast('Visor desconectado \u2014 esperando reconexi\u00f3n.', 'error');
+        relanzarOferta();
       }
     };
 
@@ -1538,6 +1543,65 @@ function stopTransmit() {
   btnStart.innerHTML     = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg> Iniciar transmisión`;
 
   setTxStatus('idle', 'Inactivo');
+}
+
+// ============================================================
+//  RELANZAR OFERTA — TX crea nueva oferta cuando RX se cae
+// ============================================================
+async function relanzarOferta() {
+  if (!sala || !localStream) return;
+
+  try {
+    // Cerrar PC anterior y limpiar sesión vieja en el Sheet
+    if (pc) { pc.close(); pc = null; }
+    await gas({ action: 'clearSession', sala }).catch(() => {});
+
+    // Nuevo RTCPeerConnection con el stream existente
+    pc = new RTCPeerConnection({ iceServers: CONFIG.ICE_SERVERS });
+
+    const dc = pc.createDataChannel('control');
+    setupTxDataChannel(dc);
+
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+    pc.onicecandidate = async e => {
+      if (e.candidate) {
+        await gas({ action: 'addCandidate', sala, datos: JSON.stringify(e.candidate.toJSON()), rol: 'caller' });
+      }
+    };
+
+    pc.onconnectionstatechange = () => {
+      const s = pc.connectionState;
+      if (s === 'connected') {
+        setTxStatus('connected', 'Conectado');
+        toast('Visor reconectado', 'success');
+        stopPolling();
+      } else if (s === 'disconnected' || s === 'failed') {
+        setTxStatus('waiting', 'Esperando visor\u2026');
+        toast('Visor desconectado \u2014 esperando reconexi\u00f3n.', 'error');
+        relanzarOferta();
+      }
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await gas({ action: 'setOffer', sala, datos: JSON.stringify(offer) });
+
+    // Polling para la nueva respuesta del RX
+    startPolling(async () => {
+      const res = await gas({ action: 'getAnswer', sala });
+      if (!res.ok) return;
+      if (pc && pc.signalingState === 'have-local-offer') {
+        await pc.setRemoteDescription(JSON.parse(res.datos));
+        setTxStatus('waiting', 'Negociando ICE\u2026');
+        fetchRemoteCandidates('callee');
+      }
+    });
+
+  } catch (err) {
+    setTxStatus('error', 'Error al relanzar');
+    toast('Error al preparar reconexión: ' + err.message, 'error');
+  }
 }
 
 // ============================================================
